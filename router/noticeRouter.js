@@ -13,7 +13,7 @@ router.get('/totalNum', (req, res) => {
 })
 //添加通知
 router.post('/add', (req, res) => {
-    let { title, author, department, content, category} = req.body
+    let { title, author, department, content, category } = req.body
     //判断上述字段都不能为空
     if (title && author && department && content && category) {
         NoticeModel.find({ title }).then((data) => {
@@ -39,7 +39,7 @@ router.post('/delete', (req, res) => {
     const { title } = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    } else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             NoticeModel.deleteOne({ title })
                 .then(() => {
@@ -52,15 +52,15 @@ router.post('/delete', (req, res) => {
             res.send({ err: -999, msg: '没有相关权限' })
         }
     }
-  
+
 })
 
 //更新通知
 router.post('/update', (req, res) => {
-    const {_id} = req.body;
+    const { _id } = req.body;
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    } else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             // console.log(notice._id)//注意此处的_id,必须跟传入的_id命名一致
             NoticeModel.findOneAndUpdate({ _id }, notice)
@@ -74,8 +74,8 @@ router.post('/update', (req, res) => {
             res.send({ err: -999, msg: '没有相关权限' })
         }
     }
-  
-    
+
+
 })
 
 //获取tongzhi分页列表（已经审核过的）
@@ -84,7 +84,7 @@ router.get('/list', (req, res) => {
         pageNum,
         pageSize
     } = req.query
-    NoticeModel.find().sort({ date_time:-1 })
+    NoticeModel.find().sort({ date_time: -1 })
         .then(notices => {
             res.send({
                 status: 0,
@@ -129,8 +129,8 @@ router.get('/search', (req, res) => {
             department: new RegExp(`^.*${noticeDepartment}.*$`)
         }
     }
-    
-    NoticeModel.find(contition).sort({ date_time:-1 })
+
+    NoticeModel.find(contition).sort({ date_time: -1 })
         .then(notices => {
             res.send({
                 status: 0,

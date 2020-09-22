@@ -7,7 +7,7 @@ const app = express();
 //使用静态中间件
 app.use(express.static('public'))
 // 声明使用解析post请求的中间件
-app.use(bodyparser.urlencoded({extended:false}));
+app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json())
 // 声明使用解析cookie数据的中间件
 const cookieParser = require('cookie-parser')
@@ -21,7 +21,7 @@ app.use(passport.session());
 app.use(flash())
 // 声明使用路由器中间件
 const indexRouter = require('./router/indexRouter.js')
-  //
+//
 //引入路由
 const userRouter = require('./router/userRouter.js');
 const articleRouter = require('./router/articleRouter.js');
@@ -41,33 +41,33 @@ const musicRouter = require('./router/musicRouter.js')
 const picshowRouter = require('./router/picshowRouter.js')
 const picshowimageFileRouter = require('./router/picshowimageFileRouter.js')
 app.use('/', indexRouter)
-app.use('/user',userRouter)
-app.use('/article',(req,res,next)=>{
+app.use('/user', userRouter)
+app.use('/article', (req, res, next) => {
   // console.log(req.body)
   // console.log(req.session)
   next()
-},articleRouter)
-app.use('/imageFile',bannerimageFileRouter)
-app.use('/articlesImg',articleimageFileRouter)//缩略图
-app.use('/softwareFile',softwareFileRouter)
-app.use('/software',softwareRouter)
-app.use('/notices',noticeRouter)
-app.use('/musicFile',musicFileRouter)
-app.use('/videoFile',videoFileRouter)
-app.use('/role',roleRouter)
-app.use('/bookfile',bookfileRouter)
-app.use('/departmentMessage',departmentMessageRouter)
-app.use('/video',videoRouter)
-app.use('/music',musicRouter)
-app.use('/banner',bannerPicRouter)
-app.use('/picshow',picshowRouter)
-app.use('/picshowImg',picshowimageFileRouter)
+}, articleRouter)
+app.use('/imageFile', bannerimageFileRouter)
+app.use('/articlesImg', articleimageFileRouter)//缩略图
+app.use('/softwareFile', softwareFileRouter)
+app.use('/software', softwareRouter)
+app.use('/notices', noticeRouter)
+app.use('/musicFile', musicFileRouter)
+app.use('/videoFile', videoFileRouter)
+app.use('/role', roleRouter)
+app.use('/bookfile', bookfileRouter)
+app.use('/departmentMessage', departmentMessageRouter)
+app.use('/video', videoRouter)
+app.use('/music', musicRouter)
+app.use('/banner', bannerPicRouter)
+app.use('/picshow', picshowRouter)
+app.use('/picshowImg', picshowimageFileRouter)
 
-app.use('/public',express.static(path.join(__dirname,'./public')))
+app.use('/public', express.static(path.join(__dirname, './public')))
 
 
-app.listen(4000,()=>{
-    console.log('正在4000端口连接数据库')
+app.listen(4000, () => {
+  console.log('正在4000端口连接数据库')
 })
 
 
