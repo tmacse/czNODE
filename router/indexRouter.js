@@ -39,6 +39,7 @@ router.get('/getNewsByID', (req, res) => {
 //获取通知详情页面
 router.get('/getBookFileByID', (req, res) => {
     const { _id } = req.query
+    console.log(_id)
     BookFileModel.find({ _id: _id }).then((data) => {
         res.send({ err: 0, data: data })
     }).catch((err) => {

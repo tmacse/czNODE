@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/czNode', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost/czNode', { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 var db = mongoose.connection;
