@@ -3,37 +3,37 @@ const passport = require('../utils/passport.js')
 const router = express.Router();
 const ArticleModel = require('../model/ArticleModel');
 
-//添加文章
-router.post('/add',(req,res)=>{
-    let { title, author, department, thumbnail, category,content} =req.body
+//添加文章（包括精品课程、案列分析和活动概况的总体路由）
+router.post('/add', (req, res) => {
+    let { title, author, department, thumbnail, category, content } = req.body
     console.log(req.body)
     //判断上述字段都不能为空
-    if(title&&author&&department&&thumbnail&&category&&content){
-        ArticleModel.find({title}).then((data)=>{
-            if(data.length===0){
+    if (title && author && department && thumbnail && category && content) {
+        ArticleModel.find({ title }).then((data) => {
+            if (data.length === 0) {
                 //文章不存在，可以添加
-                return ArticleModel.insertMany({title,author,department,thumbnail,category,content})
-            }else{
+                return ArticleModel.insertMany({ title, author, department, thumbnail, category, content })
+            } else {
                 res.send({ err: -3, msg: '文章已经存在' })
             }
-        }).then(()=>{
+        }).then(() => {
             res.send({ err: 0, msg: '添加文章成功' })
-        }).catch(()=>{
+        }).catch(() => {
             res.send({ err: -2, msg: '添加文章失败' })
         })
-    }else{
+    } else {
         return res.send({ err: -1, msg: '参数错误' })
-        
+
     }
-   
+
 })
 //更新文章(此处为更新文章，必然获取文章的ID)?????有问题
-router.post('/update',(req,res)=>{
+router.post('/update', (req, res) => {
     const article = req.body;
     console.log(article._id)
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    } else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             ArticleModel.findOneAndUpdate({ _id: article._id }, article)
                 .then(() => {
@@ -46,12 +46,12 @@ router.post('/update',(req,res)=>{
             res.send({ err: -999, msg: '没有该权限' })
         }
     }
-  
+
 
 })
 //更新文章状态
-router.post('/updateStatus',(req,res)=>{
-    const {title} = req.body
+router.post('/updateStatus', (req, res) => {
+    const { title } = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
     } else {
@@ -68,13 +68,13 @@ router.post('/updateStatus',(req,res)=>{
             res.send({ err: -999, msg: '没有该权限' })
         }
     }
-  
-   
+
+
 })
 //更新文章状态shangtoutiao
 router.post('/updateStatusToTop', (req, res) => {
     const { title } = req.body
-    if (typeof req.session.passport === 'undefined'){
+    if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
     } else {
         if (req.session.passport.user.username === 'admin') {
@@ -90,15 +90,15 @@ router.post('/updateStatusToTop', (req, res) => {
             res.send({ err: -999, msg: '没有权限' })
         }
     }
-    
-   
+
+
 })
 //更新文章状态下头条
 router.post('/updateStatusToDown', (req, res) => {
     const { title } = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    }else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             ArticleModel.findOneAndUpdate({ title: title }, { isToped: false })
                 .then((oldarticle) => {
@@ -113,30 +113,30 @@ router.post('/updateStatusToDown', (req, res) => {
         }
     }
 
-   
+
 })
 
 
 //查询文章（依照文章标题或者内容）
-router.post('/search',(req,res) =>{
-    let {kw} = req.body
+router.post('/search', (req, res) => {
+    let { kw } = req.body
     console.log(kw)
     let reg = new RegExp(kw)
-    ArticleModel.find({ $or: [{ title: { $regex: reg } }, { content: { $regex: reg } }] }).sort({ date_time: -1})
-    .then((data)=>{
-        res.send({err:0,msg:'查询成功',list:data})
-    }).catch((err)=>{
-        console.log(err)
-        res.send({err:-1,msg:'查询失败'})
-    })
+    ArticleModel.find({ $or: [{ title: { $regex: reg } }, { content: { $regex: reg } }] }).sort({ date_time: -1 })
+        .then((data) => {
+            res.send({ err: 0, msg: '查询成功', list: data })
+        }).catch((err) => {
+            console.log(err)
+            res.send({ err: -1, msg: '查询失败' })
+        })
 })
 
 //删除文章(根据文章名字删除文章)
-router.post('/delete',(req,res)=>{
-    const {title} = req.body
+router.post('/delete', (req, res) => {
+    const { title } = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    } else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             ArticleModel.deleteOne({ title: title }).then(() => {
                 res.send({ err: 0, msg: '删除文章成功' })
@@ -148,24 +148,24 @@ router.post('/delete',(req,res)=>{
             res.send({ err: -999, msg: '没有此权限' })
         }
     }
- 
-      
+
+
 })
 //实现查询分页功能
-router.post('/getArticleByPage',(req,res)=>{
+router.post('/getArticleByPage', (req, res) => {
     let pageSize = req.body.pageSize || 5 //设置为默认值显示5个
     let pageNumber = req.body.pageNumber || 1 //设置为默认值显示第一页
-    ArticleModel.find({ ischecked: false }).sort({ date_time: -1}).limit(Number(pageSize)).skip(Number((pageNumber-1)*pageSize))
-    .then((data)=>{
-        res.send({err:0,msg:'查询成功',list:data})
-    }).catch((err)=>{
-        res.send({ err: -1, msg: '查询失败' })
-    })
+    ArticleModel.find({ ischecked: false }).sort({ date_time: -1 }).limit(Number(pageSize)).skip(Number((pageNumber - 1) * pageSize))
+        .then((data) => {
+            res.send({ err: 0, msg: '查询成功', list: data })
+        }).catch((err) => {
+            res.send({ err: -1, msg: '查询失败' })
+        })
 })
 //获取文章列表(首页显示新闻数量)
 router.get('/getList', (req, res) => {
     // let num = req.query.num
-    
+
     //按时间倒序排列呈现通知（后台指定显示12条新闻）
     ArticleModel.find().sort({ date_time: -1 }).limit(Number(10)).then((data) => { res.send({ err: 0, msg: 'ok', list: data }) })
         .catch((err) => {
@@ -179,7 +179,7 @@ router.get('/list', (req, res) => {
         pageNum,
         pageSize
     } = req.query
-    ArticleModel.find({ ischecked: false }).sort({ date_time: -1})
+    ArticleModel.find({ ischecked: false }).sort({ date_time: -1 })
         .then(articles => {
             res.send({
                 status: 0,
@@ -200,7 +200,7 @@ router.get('/checkedlist', (req, res) => {
         pageNum,
         pageSize
     } = req.query
-    ArticleModel.find({ $and: [{ ischecked: true },{isToped:false}]}).sort({ date_time: -1 })
+    ArticleModel.find({ $and: [{ ischecked: true }, { isToped: false }] }).sort({ date_time: -1 })
         .then(articles => {
             res.send({
                 status: 0,
@@ -272,7 +272,7 @@ router.get('/search', (req, res) => {
             category: new RegExp(`^.*${articleCategory}.*$`)
         }
     }
-    ArticleModel.find(contition).find({ $and: [{ ischecked: true }, { isToped: false }]}).sort({ date_time: -1})
+    ArticleModel.find(contition).find({ $and: [{ ischecked: true }, { isToped: false }] }).sort({ date_time: -1 })
         .then(articles => {
             res.send({
                 status: 0,
@@ -311,20 +311,20 @@ function pageFilter(arr, pageNum, pageSize) {
 }
 //获取新闻总量
 router.get('/totalNum', (req, res) => {
-    ArticleModel.find({ischecked:true}).countDocuments()
-    .then((total)=>{
-        res.send({status:0,totalArticles:total})
-    }).catch((error)=>{
-        res.send({status:1,msg:'error'})
-    })
+    ArticleModel.find({ ischecked: true }).countDocuments()
+        .then((total) => {
+            res.send({ status: 0, totalArticles: total })
+        }).catch((error) => {
+            res.send({ status: 1, msg: 'error' })
+        })
 })
 const LVZHI = [
     { department: '组织科' }, { department: '宣传科' }, { department: '人力资源科' }, { department: '纪检检查科' }, { department: '保卫科' },
-    {department:'训练科'},{department:'部队管理科'},
+    { department: '训练科' }, { department: '部队管理科' },
 ]
-const KONGQIN = [{ department: '飞行一大队' }, { department: '飞行二大队' },{department:'飞行三大队'},{department:'空中战勤大队'}]
+const KONGQIN = [{ department: '飞行一大队' }, { department: '飞行二大队' }, { department: '飞行三大队' }, { department: '空中战勤大队' }]
 const JIWU = [{ department: '机务一中队' }, { department: '机务二中队' }, { department: '机务三中队' }, { department: '机务大队部' }]
-const CHANGZHAN = [{ department: '运输股' }, { department: '汽车连' },{department:'警卫连'}] 
+const CHANGZHAN = [{ department: '运输股' }, { department: '汽车连' }, { department: '警卫连' }]
 //获取旅直总量
 router.get('/lvzhinews', (req, res) => {
     ArticleModel.find({ ischecked: true }).find({ $or: LVZHI }).countDocuments()

@@ -1,3 +1,4 @@
+//这是一个强军动态的Model，包括各个办公室发布的内容等。
 const mongoose = require('mongoose');
 
 var moment = require('moment')

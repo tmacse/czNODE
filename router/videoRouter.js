@@ -3,17 +3,17 @@ const router = express.Router();
 const VideoModel = require('../model/VideoModel.js');
 
 router.post('/add', (req, res) => {
-    let { name, url, attr, desc,language,main_actor,director } = req.body
+    let { name, url, attr, desc, language, main_actor, director } = req.body
     console.log(req.body)
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    }else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             //判断上述字段都不能为空
             if (name && url && desc && attr && language && main_actor && director) {
                 VideoModel.find({ name }).then((data) => {
                     if (data.length === 0) {
-                        //软件名称不存在，可以添加
+                        //视频名称不存在，可以添加
                         return VideoModel.insertMany({ name, url, desc, attr, language, main_actor, director })
                     } else {
                         res.send({ err: -3, msg: '视频已经存在' })
@@ -31,9 +31,6 @@ router.post('/add', (req, res) => {
             res.send({ err: -999, msg: '没有相关权限' })
         }
     }
-
-    
-
 })
 
 //获取视频数据
@@ -57,7 +54,7 @@ router.get('/list', (req, res) => {
             })
         })
 })
-//获取软件列表（搜索的软件列表）
+//获取视频列表（搜索的视频列表）
 router.get('/search', (req, res) => {
     const {
         pageNum,
@@ -74,7 +71,7 @@ router.get('/search', (req, res) => {
         }
     } else if (videoDesc) {
         contition = {
-           desc: new RegExp(`^.*${videoDesc}.*$`)
+            desc: new RegExp(`^.*${videoDesc}.*$`)
         }
     }
     else if (videoAttr) {
@@ -98,12 +95,12 @@ router.get('/search', (req, res) => {
             })
         })
 })
-//删除软件(根据软件名字删除软件)
+//删除视频(根据视频名字删除软件)
 router.post('/delete', (req, res) => {
     const { name } = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    }else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             VideoModel.deleteOne({ name })
                 .then(() => {
@@ -117,7 +114,7 @@ router.post('/delete', (req, res) => {
         }
     }
 
-   
+
 
 })
 //得到指定数组的分页信息对象

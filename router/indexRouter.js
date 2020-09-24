@@ -37,7 +37,7 @@ router.get('/getNewsByID', (req, res) => {
     })
 })
 //获取通知详情页面
-router.get('/getBookFileByID', (req, res) => {
+router.get('/BookFileByID', (req, res) => {
     const { _id } = req.query
     console.log(_id)
     BookFileModel.find({ _id: _id }).then((data) => {
@@ -56,7 +56,7 @@ router.get('/getDepartmentByID', (req, res) => {
     })
 })
 //获取通知详情页面
-router.get('/getNoticeByID', (req, res) => {
+router.get('/NoticeByID', (req, res) => {
     const { _id } = req.query
     NoticeModel.find({ _id: _id }).then((data) => {
         res.send({ err: 0, data: data })

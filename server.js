@@ -25,44 +25,30 @@ const indexRouter = require('./router/indexRouter.js')
 //引入路由
 const userRouter = require('./router/userRouter.js');
 const articleRouter = require('./router/articleRouter.js');
-const bannerimageFileRouter = require('./router/bannerimageFileRouter.js');
-const bannerPicRouter = require('./router/bannerPicRouter.js')
 const articleimageFileRouter = require('./router/articleimageFileRouter')//文章中图片缩略图的地址
-const softwareFileRouter = require('./router/softwareFileRouter.js')
-const musicFileRouter = require('./router/musicFileRouter.js')
 const videoFileRouter = require('./router/videoFileRouter.js')
-const softwareRouter = require('./router/softwareRouter.js');
 const noticeRouter = require('./router/noticeRouter.js');
 const roleRouter = require('./router/roleRouter.js')
-const bookfileRouter = require('./router/bookfileRouter.js')
 const departmentMessageRouter = require('./router/departmentMessageRouter.js')
 const videoRouter = require('./router/videoRouter.js')
-const musicRouter = require('./router/musicRouter.js')
-const picshowRouter = require('./router/picshowRouter.js')
-const picshowimageFileRouter = require('./router/picshowimageFileRouter.js')
+
 app.use('/', indexRouter)
 app.use('/user', userRouter)
-app.use('/article', (req, res, next) => {
-  // console.log(req.body)
-  // console.log(req.session)
-  next()
-}, articleRouter)
-app.use('/imageFile', bannerimageFileRouter)
+//引入文章和文章的图片地址所需的路由
+app.use('/article', articleRouter)
 app.use('/articlesImg', articleimageFileRouter)//缩略图
-app.use('/softwareFile', softwareFileRouter)
-app.use('/software', softwareRouter)
+//引入通知的路由
 app.use('/notices', noticeRouter)
-app.use('/musicFile', musicFileRouter)
-app.use('/videoFile', videoFileRouter)
-app.use('/role', roleRouter)
-app.use('/bookfile', bookfileRouter)
-app.use('/departmentMessage', departmentMessageRouter)
+//引入视频地址的路由
 app.use('/video', videoRouter)
-app.use('/music', musicRouter)
-app.use('/banner', bannerPicRouter)
-app.use('/picshow', picshowRouter)
-app.use('/picshowImg', picshowimageFileRouter)
+app.use('/videoFile', videoFileRouter)
+//引入角色需要的路由
+app.use('/role', roleRouter)
+//引入强军动态（各个部门办公室所发的通知之类的信息）
+app.use('/departmentMessage', departmentMessageRouter)
 
+
+//引入静态地址
 app.use('/public', express.static(path.join(__dirname, './public')))
 
 

@@ -1,51 +1,18 @@
+//这是一个文章的Model(包括强军阶梯的所有内容：精品课程、案例分析和活动概况)
 const mongoose = require('mongoose');
-
 var moment = require('moment')
 moment.locale('zh-cn')
 
 var ArticleSchema = mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    author: {
-        type: String,
-        required: true
-    },
-    department: {
-        type: String,
-        required: true
-    },
-    thumbnail: {
-        type: Array,
-        default: []
-    },
-    content: {
-        type: String
-    },
-    category: {
-        type: String,
-        required: true
-    },
-    time: {
-        type: String,
-        default: function() {
-            return moment().format('L')
-        }
-    }, //前端显示的string类型的日期
-    date_time: {
-        type: Date,
-        default: Date.now
-    },
-    ischecked: {
-        type: Boolean,
-        default: false
-    },
-    isToped: {
-        type: Boolean,
-        default: false
-    },
-
+    title: { type: String, required: true },//文章（课程、公告等）的标题
+    author: { type: String, required: true },//文章发布的作者
+    department: { type: String, required: true },//文章发布的单位
+    thumbnail: { type: Array, default: [] },//文章发布的缩略图，可以为空
+    content: { type: String },//文章的内容
+    category: { type: String, required: true },//分类：包括：1、精品课程；2、案例分析；3、活动概况
+    time: { type: String, default: function () { return moment().format('L') } }, //前端显示的string类型的日期
+    date_time: { type: Date, default: Date.now },//后台用来排序的时间
+    ischecked: { type: Boolean, default: false },//是否经过审核
 });
 var ArticleModel = mongoose.model('article', ArticleSchema)
 

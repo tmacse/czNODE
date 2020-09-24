@@ -1,3 +1,4 @@
+//这是一个通知公告栏目的Model
 const mongoose = require('mongoose');
 
 var moment = require('moment')
@@ -8,7 +9,6 @@ var NoticeSchema = mongoose.Schema({
     author: { type: String, required: true },
     department: { type: String, required: true },
     content: { type: String, required: true },
-    category: { type: String, required: true },
     time: { type: String, default: moment().format('L') },//前端显示的string类型的日期
     date_time: { type: Date, default: Date.now },
 
