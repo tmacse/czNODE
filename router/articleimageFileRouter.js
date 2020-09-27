@@ -4,8 +4,7 @@ const router = express.Router();
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
-const ArticleModel = require('../model/ArticleModel.js');
-
+// const ArticleModel = require('../model/ArticleModel.js');
 const dirPath = path.join(__dirname, '..', 'public/image/articles')
 
 const storage = multer.diskStorage({
@@ -23,10 +22,8 @@ const storage = multer.diskStorage({
         let tempname = (new Date()).getTime() + parseInt(Math.random() * 9999)
         cb(null, `${tempname}.${origins}`);
     },
-
-
-
 });
+
 var upload = multer({ storage: storage })
 //新闻图片上传
 router.post('/uploads', upload.single('article-img'), (req, res) => {
@@ -49,7 +46,6 @@ router.post('/uploads', upload.single('article-img'), (req, res) => {
                 name: req.file.filename,
                 url: 'http://localhost:4000/public/image/articles/' + req.file.filename
             }
-
         })
     }
 })
@@ -72,13 +68,4 @@ router.post('/delete', (req, res) => {
         }
     })
 })
-//获取图片地址(banner图片地址)
-router.get('/getList', (req, res) => {
-    BannerPicModel.find().sort({ date_time: -1 }).limit(5).then((data) => {
-        res.send({ status: 0, msg: 'ok', list: data })
-    })
-
-})
-
-
 module.exports = router

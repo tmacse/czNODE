@@ -1,5 +1,5 @@
 const express = require('express');
-const passport = require('../utils/passport.js')
+// const passport = require('../utils/passport.js')
 const router = express.Router();
 const ArticleModel = require('../model/ArticleModel');
 
@@ -8,7 +8,7 @@ router.post('/add', (req, res) => {
     let { title, author, department, thumbnail, category, content } = req.body
     console.log(req.body)
     //判断上述字段都不能为空
-    if (title && author && department && thumbnail && category && content) {
+    if (title && author && department && category && content) {
         ArticleModel.find({ title }).then((data) => {
             if (data.length === 0) {
                 //文章不存在，可以添加
@@ -106,16 +106,12 @@ router.post('/updateStatusToDown', (req, res) => {
                 }).catch((error) => {
                     console.log()
                     res.send({ err: 1, msg: '更新文章状态异常, 请重新尝试' })
-
                 })
         } else {
             res.send({ err: -999, msg: '没有权限' })
         }
     }
-
-
 })
-
 
 //查询文章（依照文章标题或者内容）
 router.post('/search', (req, res) => {
@@ -196,17 +192,9 @@ router.get('/list', (req, res) => {
 })
 //获取文章分页列表（已经审核过的）
 router.get('/checkedlist', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
+    const { pageNum, pageSize } = req.query
     ArticleModel.find({ $and: [{ ischecked: true }, { isToped: false }] }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
+        .then(articles => { res.send({ status: 0, data: pageFilter(articles, pageNum, pageSize) }) })
         .catch(error => {
             console.error('获取文章列表异常', error)
             res.send({
@@ -309,338 +297,5 @@ function pageFilter(arr, pageNum, pageSize) {
         list
     }
 }
-//获取新闻总量
-router.get('/totalNum', (req, res) => {
-    ArticleModel.find({ ischecked: true }).countDocuments()
-        .then((total) => {
-            res.send({ status: 0, totalArticles: total })
-        }).catch((error) => {
-            res.send({ status: 1, msg: 'error' })
-        })
-})
-const LVZHI = [
-    { department: '组织科' }, { department: '宣传科' }, { department: '人力资源科' }, { department: '纪检检查科' }, { department: '保卫科' },
-    { department: '训练科' }, { department: '部队管理科' },
-]
-const KONGQIN = [{ department: '飞行一大队' }, { department: '飞行二大队' }, { department: '飞行三大队' }, { department: '空中战勤大队' }]
-const JIWU = [{ department: '机务一中队' }, { department: '机务二中队' }, { department: '机务三中队' }, { department: '机务大队部' }]
-const CHANGZHAN = [{ department: '运输股' }, { department: '汽车连' }, { department: '警卫连' }]
-//获取旅直总量
-router.get('/lvzhinews', (req, res) => {
-    ArticleModel.find({ ischecked: true }).find({ $or: LVZHI }).countDocuments()
-        .then((total) => {
-            res.send({ status: 0, totalLvzhiArticles: total })
-        }).catch((error) => {
-            res.send({ status: 1, msg: 'error' })
-        })
-})
-router.get('/kongqinnews', (req, res) => {
-    ArticleModel.find({ ischecked: true }).find({ $or: KONGQIN }).countDocuments()
-        .then((total) => {
-            res.send({ status: 0, totalKongqinArticles: total })
-        }).catch((error) => {
-            res.send({ status: 1, msg: 'error' })
-        })
-})
-router.get('/changzhannews', (req, res) => {
-    ArticleModel.find({ ischecked: true }).find({ $or: CHANGZHAN }).countDocuments()
-        .then((total) => {
-            res.send({ status: 0, totalChangzhanArticles: total })
-        }).catch((error) => {
-            res.send({ status: 1, msg: 'error' })
-        })
-})
-router.get('/jiwunews', (req, res) => {
-    ArticleModel.find({ ischecked: true }).find({ $or: JIWU }).countDocuments()
-        .then((total) => {
-            res.send({ status: 0, totalJiwuArticles: total })
-        }).catch((error) => {
-            res.send({ status: 1, msg: 'error' })
-        })
-})
-//旅直
-router.get('/lvzhisearch', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        articleTitle,
-        articleContent,
-        articleAuthor,
-        articleDepartment,
-        articleCategory
-    } = req.query
-    let contition = {}
-    if (articleTitle) {
-        contition = {
-            title: new RegExp(`^.*${articleTitle}.*$`)
-        }
-    } else if (articleContent) {
-        contition = {
-            content: new RegExp(`^.*${articleContent}.*$`)
-        }
-    }
-    else if (articleAuthor) {
-        contition = {
-            author: new RegExp(`^.*${articleAuthor}.*$`)
-        }
-    }
-    else if (articleDepartment) {
-        contition = {
-            department: new RegExp(`^.*${articleDepartment}.*$`)
-        }
-    }
-    else if (articleCategory) {
-        contition = {
-            category: new RegExp(`^.*${articleCategory}.*$`)
-        }
-    }
-    ArticleModel.find(contition).find({ $or: LVZHI }).find({ $and: [{ ischecked: true }, { isToped: false }] }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('搜索文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索文章列表异常, 请重新尝试'
-            })
-        })
-})
-router.get('/lvzhicheckedlist', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    ArticleModel.find({ $and: [{ ischecked: true }, { isToped: false }, { $or: LVZHI }] }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取文章列表异常, 请重新尝试'
-            })
-        })
-})
-router.get('/kongqinsearch', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        articleTitle,
-        articleContent,
-        articleAuthor,
-        articleDepartment,
-        articleCategory
-    } = req.query
-    let contition = {}
-    if (articleTitle) {
-        contition = {
-            title: new RegExp(`^.*${articleTitle}.*$`)
-        }
-    } else if (articleContent) {
-        contition = {
-            content: new RegExp(`^.*${articleContent}.*$`)
-        }
-    }
-    else if (articleAuthor) {
-        contition = {
-            author: new RegExp(`^.*${articleAuthor}.*$`)
-        }
-    }
-    else if (articleDepartment) {
-        contition = {
-            department: new RegExp(`^.*${articleDepartment}.*$`)
-        }
-    }
-    else if (articleCategory) {
-        contition = {
-            category: new RegExp(`^.*${articleCategory}.*$`)
-        }
-    }
-    ArticleModel.find(contition).find({ $or: KONGQIN }).find({ $and: [{ ischecked: true }, { isToped: false }] }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('搜索文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索文章列表异常, 请重新尝试'
-            })
-        })
-})
-router.get('/kongqincheckedlist', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    ArticleModel.find({ $and: [{ ischecked: true }, { isToped: false }, { $or: KONGQIN }] }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取文章列表异常, 请重新尝试'
-            })
-        })
-})
-router.get('/changzhansearch', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        articleTitle,
-        articleContent,
-        articleAuthor,
-        articleDepartment,
-        articleCategory
-    } = req.query
-    let contition = {}
-    if (articleTitle) {
-        contition = {
-            title: new RegExp(`^.*${articleTitle}.*$`)
-        }
-    } else if (articleContent) {
-        contition = {
-            content: new RegExp(`^.*${articleContent}.*$`)
-        }
-    }
-    else if (articleAuthor) {
-        contition = {
-            author: new RegExp(`^.*${articleAuthor}.*$`)
-        }
-    }
-    else if (articleDepartment) {
-        contition = {
-            department: new RegExp(`^.*${articleDepartment}.*$`)
-        }
-    }
-    else if (articleCategory) {
-        contition = {
-            category: new RegExp(`^.*${articleCategory}.*$`)
-        }
-    }
-    ArticleModel.find(contition).find({ $or: CHANGZHAN }).find({ $and: [{ ischecked: true }, { isToped: false }] }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('搜索文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索文章列表异常, 请重新尝试'
-            })
-        })
-})
-router.get('/changzhancheckedlist', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    ArticleModel.find({ $and: [{ ischecked: true }, { isToped: false }, { $or: CHANGZHAN }] }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取文章列表异常, 请重新尝试'
-            })
-        })
-})
-router.get('/jiwusearch', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        articleTitle,
-        articleContent,
-        articleAuthor,
-        articleDepartment,
-        articleCategory
-    } = req.query
-    let contition = {}
-    if (articleTitle) {
-        contition = {
-            title: new RegExp(`^.*${articleTitle}.*$`)
-        }
-    } else if (articleContent) {
-        contition = {
-            content: new RegExp(`^.*${articleContent}.*$`)
-        }
-    }
-    else if (articleAuthor) {
-        contition = {
-            author: new RegExp(`^.*${articleAuthor}.*$`)
-        }
-    }
-    else if (articleDepartment) {
-        contition = {
-            department: new RegExp(`^.*${articleDepartment}.*$`)
-        }
-    }
-    else if (articleCategory) {
-        contition = {
-            category: new RegExp(`^.*${articleCategory}.*$`)
-        }
-    }
-    ArticleModel.find(contition).find({ $or: JIWU }).find({ $and: [{ ischecked: true }, { isToped: false }] }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('搜索文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索文章列表异常, 请重新尝试'
-            })
-        })
-})
-router.get('/jiwucheckedlist', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    ArticleModel.find({ $and: [{ ischecked: true }, { isToped: false }, { $or: JIWU }] }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取文章列表异常, 请重新尝试'
-            })
-        })
-})
+
 module.exports = router
