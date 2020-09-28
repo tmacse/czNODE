@@ -1,48 +1,33 @@
 const express = require('express');
 const router = express.Router();
 
-const DepartmentMessageModel  = require('../model/DepartmentMessageModel.js')
+const DepartmentMessageModel = require('../model/DepartmentMessageModel.js')
 
-
-//获取数量
-router.get('/totalNum', (req, res) => {
-    DepartmentMessageModel.find().countDocuments()
-        .then((total) => {
-            res.send({ status: 0, totalDepartmentMessage: total })
-        }).catch((error) => {
-            res.send({ status: 1, msg: error })
-        })
-})
 //添加内容
 router.post('/add', (req, res) => {
-    let { title, author, department, content} = req.body
+    let { title, author, department, content } = req.body
     //判断上述字段都不能为空
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    }else{
-        if (title && author && department && content) {
-            DepartmentMessageModel.find({ title }).then((data) => {
-                if (data.length === 0) {
-                    //文章不存在，可以添加
-                    return DepartmentMessageModel.insertMany({ title, author, department, content })
-                } else {
-                    res.send({ err: -3, msg: '已经存在' })
-                }
-            }).then(() => {
-                res.send({ err: 0, msg: '添加文章成功' })
-            }).catch((err) => {
-                res.send({ err: -2, msg: '添加文章失败' })
-                console.log(err)
-            })
-        } else {
-            return res.send({ err: -1, msg: '参数错误' })
-        }
+    if (title && author && department && content) {
+        DepartmentMessageModel.find({ title }).then((data) => {
+            if (data.length === 0) {
+                //文章不存在，可以添加
+                return DepartmentMessageModel.insertMany({ title, author, department, content })
+            } else {
+                res.send({ err: -3, msg: '已经存在' })
+            }
+        }).then(() => {
+            res.send({ err: 0, msg: '添加部门信息成功' })
+        }).catch((err) => {
+            res.send({ err: -2, msg: '添加部门信息失败' })
+            console.log(err)
+        })
+    } else {
+        return res.send({ err: -1, msg: '参数错误' })
     }
-   
 })
- // 更新文章(此处为更新文章，必然获取文章的ID) ????? 有问题
+// 更新文章(此处为更新文章，必然获取文章的ID) ????? 有问题
 router.post('/update', (req, res) => {
-        const Dmessage = req.body;
+    const Dmessage = req.body;
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
     } {
@@ -58,9 +43,9 @@ router.post('/update', (req, res) => {
             res.send({ err: -999, msg: '没有相关权限' })
         }
     }
-  
-        
-    })
+
+
+})
 router.get('/list', (req, res) => {
     const {
         pageNum,
@@ -190,7 +175,7 @@ router.get('/zuzhi', (req, res) => {
         pageNum,
         pageSize
     } = req.query
-    DepartmentMessageModel.find({department:'组织科'}).sort({ date_time: -1 })
+    DepartmentMessageModel.find({ department: '组织科' }).sort({ date_time: -1 })
         .then(notices => {
             res.send({
                 status: 0,
@@ -526,7 +511,7 @@ router.post('/delete', (req, res) => {
     const { title } = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    } else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             DepartmentMessageModel.deleteOne({ title })
                 .then(() => {
@@ -539,7 +524,7 @@ router.post('/delete', (req, res) => {
             res.send({ err: -999, msg: '没有相关权限' })
         }
     }
-   
-    
+
+
 })
 module.exports = router
