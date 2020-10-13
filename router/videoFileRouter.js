@@ -39,12 +39,13 @@ router.post('/uploads', upload.single('video'), (req, res) => {
     } else {
         let file = req.file
         let url = `/public/video/${req.file.filename}`
+        console.log(url)
         // ArticleModel.insertMany({url})
         res.send({
             status: 0,
             data: {
                 name: file.filename,
-                url: BASE_URL_ADDRESS+'/public/video/' + file.filename
+                url: BASE_URL_ADDRESS + '/public/video/' + file.filename,
             }
 
         })

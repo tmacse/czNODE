@@ -52,8 +52,8 @@ app.use('/departmentMessage', departmentMessageRouter)
 app.use('/public', express.static(path.join(__dirname, './public')))
 
 
-app.listen(4000, () => {
-  console.log('正在4000端口连接数据库')
+app.listen(5000, () => {
+  console.log('正在5000端口连接数据库')
 })
 
 

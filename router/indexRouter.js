@@ -3,6 +3,7 @@ const router = express.Router();
 const ArticleModel = require('../model/ArticleModel');
 const NoticeModel = require('../model/NoticeModel.js');
 const DepartmentMessageModel = require('../model/DepartmentMessageModel');
+const VideoModel = require('../model/VideoModel');
 //这是一个前段获取界面的router
 
 router.get('/homedata', async (req, res) => {
@@ -33,10 +34,18 @@ router.get('/homedata', async (req, res) => {
     //获取强军动态中人力资源办的消息列表
     const manpowerlist = await DepartmentMessageModel.find({ 'department': '人力资源办' })
         .sort({ date_time: -1 }).limit(6)
+    //获取强军文化中强军影视的消息列表
+    const movielist = await VideoModel.find({ "attr": '强军影视' }).sort({ date_time: -1 }).limit(6)
+    //获取强军文化中练兵备战的消息列表
+    const videolist = await VideoModel.find({ "attr": "练兵备战" }).sort({ date_time: -1 }).limit(6)
+    //获取强军文化中创意视频的消息列表
+    const vloglist = await VideoModel.find({ "attr": "创意视频" }).sort({ date_time: -1 }).limit(6)
+
     Promise.all(
         [
             curriculumlist, noticelist, casebooklist, summarylist,
-            governmentlist, trainlist, organizationlist, propagationlist, manpowerlist
+            governmentlist, trainlist, organizationlist, propagationlist,
+            manpowerlist, movielist, videolist, vloglist,
         ]
     ).then((result) => {
         res.send(
@@ -51,7 +60,10 @@ router.get('/homedata', async (req, res) => {
                     'trainlist': result[5],
                     'organizationlist': result[6],
                     'propagationlist': result[7],
-                    'manpowerlist': result[8]
+                    'manpowerlist': result[8],
+                    "movielist": result[9],
+                    "videolist": result[10],
+                    "vloglist": result[11],
                 }
             })
     })
@@ -60,11 +72,11 @@ router.get('/homedata', async (req, res) => {
 router.get('/ByID', (req, res) => {
     const { _id } = req.query
     const modelList = [ArticleModel, NoticeModel, DepartmentMessageModel]
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < modelList.length; i++) {
         modelList[i].find({ _id: _id }).then((data) => {
             //判定data是否是空数组，如果是空数组，不执行，将不是空数组的结果data推送至前端
             if (JSON.stringify(data) === '[]') {
-                console.log('这是一个空值', data)
+                console.log('这是一个空值')
             }
             else {
                 console.log('222', data)

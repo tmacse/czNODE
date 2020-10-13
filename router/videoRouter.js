@@ -3,42 +3,31 @@ const router = express.Router();
 const VideoModel = require('../model/VideoModel.js');
 
 router.post('/add', (req, res) => {
-    let { name, url, attr, desc, language, main_actor, director } = req.body
+    let { name, url, attr, desc, main_actor, director } = req.body
     console.log(req.body)
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    } else {
-        if (req.session.passport.user.username === 'admin') {
-            //判断上述字段都不能为空
-            if (name && url && desc && attr && language && main_actor && director) {
-                VideoModel.find({ name }).then((data) => {
-                    if (data.length === 0) {
-                        //视频名称不存在，可以添加
-                        return VideoModel.insertMany({ name, url, desc, attr, language, main_actor, director })
-                    } else {
-                        res.send({ err: -3, msg: '视频已经存在' })
-                    }
-                }).then(() => {
-                    res.send({ err: 0, msg: '添加视频成功' })
-                }).catch((err) => {
-                    res.send({ err: -2, msg: '添加视频失败' })
-                    console.log(err)
-                })
+    //判断上述字段都不能为空
+    if (name && url && desc && attr && main_actor && director) {
+        VideoModel.find({ name }).then((data) => {
+            if (data.length === 0) {
+                //视频名称不存在，可以添加
+                return VideoModel.insertMany({ name, url, desc, attr, main_actor, director })
             } else {
-                return res.send({ err: -1, msg: '参数错误' })
+                res.send({ err: -3, msg: '视频已经存在' })
             }
-        } else {
-            res.send({ err: -999, msg: '没有相关权限' })
-        }
+        }).then(() => {
+            res.send({ err: 0, msg: '添加视频成功' })
+        }).catch((err) => {
+            res.send({ err: -2, msg: '添加视频失败' })
+            console.log(err)
+        })
+    } else {
+        return res.send({ err: -1, msg: '参数错误' })
     }
 })
 
 //获取视频数据
 router.get('/list', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
+    const { pageNum, pageSize } = req.query
     VideoModel.find().sort({ date_time: -1 })
         .then(videos => {
             res.send({
