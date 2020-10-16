@@ -29,59 +29,30 @@ router.post('/add', (req, res) => {
 router.get('/list', (req, res) => {
     const { pageNum, pageSize } = req.query
     VideoModel.find().sort({ date_time: -1 })
-        .then(videos => {
-            res.send({
-                status: 0,
-                data: pageFilter(videos, pageNum, pageSize)
-            })
-        })
+        .then(videos => { res.send({ status: 0, data: pageFilter(videos, pageNum, pageSize) }) })
         .catch(error => {
             console.error('获取文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取文章列表异常, 请重新尝试'
-            })
+            res.send({ status: 1, msg: '获取文章列表异常, 请重新尝试' })
         })
 })
 //获取视频列表（搜索的视频列表）
 router.get('/search', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        videoName,
-        videoDesc,
-        videoAttr,
-    } = req.query
+    const { pageNum, pageSize, searchName, videoName, videoDesc, videoAttr, } = req.query
     let contition = {}
     if (videoName) {
-        contition = {
-            name: new RegExp(`^.*${videoName}.*$`)
-        }
+        contition = { name: new RegExp(`^.*${videoName}.*$`) }
     } else if (videoDesc) {
-        contition = {
-            desc: new RegExp(`^.*${videoDesc}.*$`)
-        }
+        contition = { desc: new RegExp(`^.*${videoDesc}.*$`) }
     }
     else if (videoAttr) {
-        contition = {
-            attr: new RegExp(`^.*${videoAttr}.*$`)
-        }
+        contition = { attr: new RegExp(`^.*${videoAttr}.*$`) }
     }
 
     VideoModel.find(contition).sort({ date_time: -1 })
-        .then(videos => {
-            res.send({
-                status: 0,
-                data: pageFilter(videos, pageNum, pageSize)
-            })
-        })
+        .then(videos => { res.send({ status: 0, data: pageFilter(videos, pageNum, pageSize) }) })
         .catch(error => {
             console.error('搜索列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索视频列表异常, 请重新尝试'
-            })
+            res.send({ status: 1, msg: '搜索视频列表异常, 请重新尝试' })
         })
 })
 //删除视频(根据视频名字删除软件)
@@ -92,12 +63,8 @@ router.post('/delete', (req, res) => {
     } else {
         if (req.session.passport.user.username === 'admin') {
             VideoModel.deleteOne({ name })
-                .then(() => {
-                    res.send({ err: 0, msg: '删除视频成功' })
-                })
-                .catch(() => {
-                    res.send({ err: -1, msg: '删除视频失败' })
-                })
+                .then(() => { res.send({ err: 0, msg: '删除视频成功' }) })
+                .catch(() => { res.send({ err: -1, msg: '删除视频失败' }) })
         } else {
             res.send({ err: -999, msg: '没有相关权限' })
         }

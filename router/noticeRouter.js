@@ -78,25 +78,18 @@ router.post('/update', (req, res) => {
 
 })
 
-//获取tongzhi分页列表（已经审核过的）
+//获取tongzhi分页列表
 router.get('/list', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
+    const { pageNum } = req.query
+    const pageSize = 10//先将pageNum和pageSize定死
     NoticeModel.find().sort({ date_time: -1 })
         .then(notices => {
-            res.send({
-                status: 0,
-                data: pageFilter(notices, pageNum, pageSize)
-            })
+            console.log(pageNum, pageSize)
+            res.send({ status: 0, data: pageFilter(notices, pageNum, pageSize) })
         })
         .catch(error => {
             console.error('获取通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取通知列表异常, 请重新尝试'
-            })
+            res.send({ status: 1, msg: '获取通知列表异常, 请重新尝试' })
         })
 })
 router.get('/search', (req, res) => {
