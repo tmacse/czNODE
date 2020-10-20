@@ -4,7 +4,7 @@ var moment = require('moment')
 moment.locale('zh-cn')
 
 var VideoSchema = new mongoose.Schema({
-    name: { type: String, required: true },//视频名称
+    title: { type: String, required: true },//视频名称
     time: { type: String, default: moment().format('LL') },//前端显示的string类型的日期
     date_time: { type: Date, default: Date.now },//后端用来排序等的时间
     url: { type: Array, required: true },//链接地址

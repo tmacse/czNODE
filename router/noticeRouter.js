@@ -78,20 +78,7 @@ router.post('/update', (req, res) => {
 
 })
 
-//获取tongzhi分页列表
-router.get('/list', (req, res) => {
-    const { pageNum } = req.query
-    const pageSize = 10//先将pageNum和pageSize定死
-    NoticeModel.find().sort({ date_time: -1 })
-        .then(notices => {
-            console.log(pageNum, pageSize)
-            res.send({ status: 0, data: pageFilter(notices, pageNum, pageSize) })
-        })
-        .catch(error => {
-            console.error('获取通知列表异常', error)
-            res.send({ status: 1, msg: '获取通知列表异常, 请重新尝试' })
-        })
-})
+
 router.get('/search', (req, res) => {
     const {
         pageNum,
@@ -151,13 +138,6 @@ function pageFilter(arr, pageNum, pageSize) {
     for (var i = start; i < end; i++) {
         list.push(arr[i])
     }
-
-    return {
-        pageNum,
-        total,
-        pages,
-        pageSize,
-        list
-    }
+    return { pageNum, total, pages, pageSize, list }
 }
 module.exports = router

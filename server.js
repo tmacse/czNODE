@@ -31,6 +31,7 @@ const noticeRouter = require('./router/noticeRouter.js');
 const roleRouter = require('./router/roleRouter.js')
 const departmentMessageRouter = require('./router/departmentMessageRouter.js')
 const videoRouter = require('./router/videoRouter.js')
+const listRouter = require('./router/listRouter.js')
 
 app.use('/', indexRouter)
 app.use('/user', userRouter)
@@ -39,6 +40,7 @@ app.use('/article', articleRouter)
 app.use('/articlesImg', articleimageFileRouter)//缩略图
 //引入通知的路由
 app.use('/notices', noticeRouter)
+app.use('/list', listRouter)
 //引入视频地址的路由
 app.use('/video', videoRouter)
 app.use('/videoFile', videoFileRouter)

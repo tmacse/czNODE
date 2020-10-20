@@ -4,6 +4,31 @@ const ArticleModel = require('../model/ArticleModel');
 const NoticeModel = require('../model/NoticeModel.js');
 const DepartmentMessageModel = require('../model/DepartmentMessageModel');
 const VideoModel = require('../model/VideoModel');
+
+
+//获取通知分页列表
+router.get('/list', (req, res) => {
+    console.log('1', req.query)
+    const { pageNum } = req.query
+    const pageSize = 10//先将pageSize值设定为10
+    NoticeModel.find().sort({ date_time: -1 })
+        .then(contents => { res.send({ status: 0, data: pageFilter(contents, pageNum, pageSize) }) })
+        .catch(error => { res.send({ status: 1, msg: '获取列表异常, 请重新尝试' }) })
+})
+//得到指定数组的分页信息对象
+function pageFilter(arr, pageNum, pageSize) {
+    pageNum = pageNum * 1
+    pageSize = pageSize * 1
+    const total = arr.length
+    const pages = Math.floor((total + pageSize - 1) / pageSize)
+    const start = pageSize * (pageNum - 1)
+    const end = start + pageSize <= total ? start + pageSize : total
+    const list = []
+    for (var i = start; i < end; i++) {
+        list.push(arr[i])
+    }
+    return { pageNum, total, pages, pageSize, list }
+}
 //这是一个前段获取界面的router
 
 router.get('/homedata', async (req, res) => {
