@@ -5,7 +5,7 @@ const DepartmentMessageModel = require('../model/DepartmentMessageModel');
 const NoticeModel = require('../model/NoticeModel.js');
 const VideoModel = require('../model/VideoModel');
 
-const LIST = [['curriculum', 'ArticleModel'], ['notices', 'NoticeModel']]
+
 
 //获取精品课程分页列表
 router.get('/curriculum', (req, res) => {
@@ -53,7 +53,25 @@ router.get('/dynamic', (req, res) => {
 //获得强军影视的列表
 router.get('/movie', (req, res) => {
     const { pageNum, pageSize } = req.query
-    VideoModel.find().sort({ date_time: -1 })
+    VideoModel.find({ 'attr': '强军影视' }).sort({ date_time: -1 })
+        .then(contents => { res.send({ status: 0, data: pageFilter(contents, pageNum, pageSize) }) })
+        .catch(error => {
+            res.send({ status: 1, msg: '获取列表异常, 请重新尝试' })
+        })
+})
+//获得练兵备战的列表
+router.get('/video', (req, res) => {
+    const { pageNum, pageSize } = req.query
+    VideoModel.find({ 'attr': '练兵备战' }).sort({ date_time: -1 })
+        .then(contents => { res.send({ status: 0, data: pageFilter(contents, pageNum, pageSize) }) })
+        .catch(error => {
+            res.send({ status: 1, msg: '获取列表异常, 请重新尝试' })
+        })
+})
+//获得创意视频的列表
+router.get('/vlog', (req, res) => {
+    const { pageNum, pageSize } = req.query
+    VideoModel.find({ 'attr': '创意视频' }).sort({ date_time: -1 })
         .then(contents => { res.send({ status: 0, data: pageFilter(contents, pageNum, pageSize) }) })
         .catch(error => {
             res.send({ status: 1, msg: '获取列表异常, 请重新尝试' })
