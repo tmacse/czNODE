@@ -28,24 +28,15 @@ router.post('/add', (req, res) => {
 // 更新文章(此处为更新文章，必然获取文章的ID) ????? 有问题
 router.post('/update', (req, res) => {
     const Dmessage = req.body;
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    } {
-        if (req.session.passport.user.username === 'admin') {
-            DepartmentMessageModel.findOneAndUpdate({ _id: Dmessage._id }, Dmessage)
-                .then(() => {
-                    res.send({ err: 0, msg: '更新成功' })
-                }).catch((err) => {
-                    // console.error('更新商品异常', err)
-                    res.send({ err: -1, msg: '更新失败' })
-                })
-        } else {
-            res.send({ err: -999, msg: '没有相关权限' })
-        }
-    }
-
-
-})
+    DepartmentMessageModel.findOneAndUpdate({ _id: Dmessage._id }, Dmessage)
+        .then(() => {
+            res.send({ err: 0, msg: '更新成功' })
+        }).catch((err) => {
+            // console.error('更新商品异常', err)
+            res.send({ err: -1, msg: '更新失败' })
+        })
+}
+)
 router.get('/list', (req, res) => {
     const {
         pageNum,
@@ -66,68 +57,7 @@ router.get('/list', (req, res) => {
             })
         })
 })
-//获取全部消息
-router.get('/searchZuzhi', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        messageTitle,
-        messageContent,
-        messageAuthor,
-    } = req.query
-    let contition = {}
-    if (messageTitle) {
-        contition = {
-            title: new RegExp(`^.*${messageTitle}.*$`)
-        }
-    } else if (messageContent) {
-        contition = {
-            content: new RegExp(`^.*${messageContent}.*$`)
-        }
-    }
-    else if (messageAuthor) {
-        contition = {
-            author: new RegExp(`^.*${messageAuthor}.*$`)
-        }
-    }
 
-    DepartmentMessageModel.find({ department: '组织科' }).find(contition).sort({ date_time: -1 })
-        .then(Dmessages => {
-            res.send({
-                status: 0,
-                data: pageFilter(Dmessages, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('搜索通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索通知列表异常, 请重新尝试'
-            })
-        })
-})
-//获取组织科消息
-router.get('/department', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    DepartmentMessageModel.find({}).sort({ date_time: -1 })
-        .then(notices => {
-            res.send({
-                status: 0,
-                data: pageFilter(notices, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取通知列表异常, 请重新尝试'
-            })
-        })
-})
 //获取全部的消息动态
 router.get('/searchDepartment', (req, res) => {
     const {
@@ -169,275 +99,7 @@ router.get('/searchDepartment', (req, res) => {
             })
         })
 })
-//获取组织科消息
-router.get('/zuzhi', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    DepartmentMessageModel.find({ department: '组织科' }).sort({ date_time: -1 })
-        .then(notices => {
-            res.send({
-                status: 0,
-                data: pageFilter(notices, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取通知列表异常, 请重新尝试'
-            })
-        })
-})
-//获取人力资源科的消息动态
-router.get('/searchRenli', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        messageTitle,
-        messageContent,
-        messageAuthor,
-    } = req.query
-    let contition = {}
-    if (messageTitle) {
-        contition = {
-            title: new RegExp(`^.*${messageTitle}.*$`)
-        }
-    } else if (messageContent) {
-        contition = {
-            content: new RegExp(`^.*${messageContent}.*$`)
-        }
-    }
-    else if (messageAuthor) {
-        contition = {
-            author: new RegExp(`^.*${messageAuthor}.*$`)
-        }
-    }
 
-    DepartmentMessageModel.find({ department: '人力资源科' }).find(contition).sort({ date_time: -1 })
-        .then(Dmessages => {
-            res.send({
-                status: 0,
-                data: pageFilter(Dmessages, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('搜索通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索通知列表异常, 请重新尝试'
-            })
-        })
-})
-//获取人力资源科消息
-router.get('/renli', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    DepartmentMessageModel.find({ department: '人力资源科' }).sort({ date_time: -1 })
-        .then(notices => {
-            res.send({
-                status: 0,
-                data: pageFilter(notices, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取通知列表异常, 请重新尝试'
-            })
-        })
-})
-//获得保卫科消息
-router.get('/searchBaowei', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        messageTitle,
-        messageContent,
-        messageAuthor,
-    } = req.query
-    let contition = {}
-    if (messageTitle) {
-        contition = {
-            title: new RegExp(`^.*${messageTitle}.*$`)
-        }
-    } else if (messageContent) {
-        contition = {
-            content: new RegExp(`^.*${messageContent}.*$`)
-        }
-    }
-    else if (messageAuthor) {
-        contition = {
-            author: new RegExp(`^.*${messageAuthor}.*$`)
-        }
-    }
-
-    DepartmentMessageModel.find({ department: '保卫科' }).find(contition).sort({ date_time: -1 })
-        .then(Dmessages => {
-            res.send({
-                status: 0,
-                data: pageFilter(Dmessages, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('搜索通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索通知列表异常, 请重新尝试'
-            })
-        })
-})
-//获取保卫科消息
-router.get('/baowei', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    DepartmentMessageModel.find({ department: '保卫科' }).sort({ date_time: -1 })
-        .then(notices => {
-            res.send({
-                status: 0,
-                data: pageFilter(notices, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取通知列表异常, 请重新尝试'
-            })
-        })
-})
-//获取纪检监察科的消息动态
-router.get('/searchJijian', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        messageTitle,
-        messageContent,
-        messageAuthor,
-    } = req.query
-    let contition = {}
-    if (messageTitle) {
-        contition = {
-            title: new RegExp(`^.*${messageTitle}.*$`)
-        }
-    } else if (messageContent) {
-        contition = {
-            content: new RegExp(`^.*${messageContent}.*$`)
-        }
-    }
-    else if (messageAuthor) {
-        contition = {
-            author: new RegExp(`^.*${messageAuthor}.*$`)
-        }
-    }
-
-    DepartmentMessageModel.find({ department: '纪检监察科' }).find(contition).sort({ date_time: -1 })
-        .then(Dmessages => {
-            res.send({
-                status: 0,
-                data: pageFilter(Dmessages, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('搜索通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索通知列表异常, 请重新尝试'
-            })
-        })
-})
-//获取纪检监察科消息
-router.get('/jijian', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    DepartmentMessageModel.find({ department: '纪检监察科' }).sort({ date_time: -1 })
-        .then(notices => {
-            res.send({
-                status: 0,
-                data: pageFilter(notices, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取通知列表异常, 请重新尝试'
-            })
-        })
-})
-//获取宣传科消息动态
-router.get('/searchXuanchuan', (req, res) => {
-    const {
-        pageNum,
-        pageSize,
-        searchName,
-        messageTitle,
-        messageContent,
-        messageAuthor,
-    } = req.query
-    let contition = {}
-    if (messageTitle) {
-        contition = {
-            title: new RegExp(`^.*${messageTitle}.*$`)
-        }
-    } else if (messageContent) {
-        contition = {
-            content: new RegExp(`^.*${messageContent}.*$`)
-        }
-    }
-    else if (messageAuthor) {
-        contition = {
-            author: new RegExp(`^.*${messageAuthor}.*$`)
-        }
-    }
-
-    DepartmentMessageModel.find({ department: '宣传科' }).find(contition).sort({ date_time: -1 })
-        .then(Dmessages => {
-            res.send({
-                status: 0,
-                data: pageFilter(Dmessages, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('搜索通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '搜索通知列表异常, 请重新尝试'
-            })
-        })
-})
-//获取宣传科消息
-router.get('/xuanchuan', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    DepartmentMessageModel.find({ department: '宣传科' }).sort({ date_time: -1 })
-        .then(notices => {
-            res.send({
-                status: 0,
-                data: pageFilter(notices, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取通知列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取通知列表异常, 请重新尝试'
-            })
-        })
-})
 router.get('/search', (req, res) => {
     const {
         pageNum,
@@ -509,22 +171,8 @@ function pageFilter(arr, pageNum, pageSize) {
 //删除通知
 router.post('/delete', (req, res) => {
     const { title } = req.body
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    } else {
-        if (req.session.passport.user.username === 'admin') {
-            DepartmentMessageModel.deleteOne({ title })
-                .then(() => {
-                    res.send({ err: 0, msg: '删除通知成功' })
-                })
-                .catch(() => {
-                    res.send({ err: -1, msg: '删除通知失败' })
-                })
-        } else {
-            res.send({ err: -999, msg: '没有相关权限' })
-        }
-    }
-
-
+    DepartmentMessageModel.deleteOne({ title })
+        .then(() => { res.send({ err: 0, msg: '删除通知成功' }) })
+        .catch(() => { res.send({ err: -1, msg: '删除通知失败' }) })
 })
 module.exports = router

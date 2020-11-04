@@ -3,14 +3,14 @@ const router = express.Router();
 const VideoModel = require('../model/VideoModel.js');
 
 router.post('/add', (req, res) => {
-    let { name, url, attr, desc, main_actor, director } = req.body
+    let { title, url, attr, desc, main_actor, director } = req.body
     console.log(req.body)
     //判断上述字段都不能为空
-    if (name && url && desc && attr && main_actor && director) {
-        VideoModel.find({ name }).then((data) => {
+    if (title && url && desc && attr && main_actor && director) {
+        VideoModel.find({ title }).then((data) => {
             if (data.length === 0) {
                 //视频名称不存在，可以添加
-                return VideoModel.insertMany({ name, url, desc, attr, main_actor, director })
+                return VideoModel.insertMany({ title, url, desc, attr, main_actor, director })
             } else {
                 res.send({ err: -3, msg: '视频已经存在' })
             }
@@ -40,7 +40,7 @@ router.get('/search', (req, res) => {
     const { pageNum, pageSize, searchName, videoName, videoDesc, videoAttr, } = req.query
     let contition = {}
     if (videoName) {
-        contition = { name: new RegExp(`^.*${videoName}.*$`) }
+        contition = { title: new RegExp(`^.*${videoName}.*$`) }
     } else if (videoDesc) {
         contition = { desc: new RegExp(`^.*${videoDesc}.*$`) }
     }
@@ -57,22 +57,16 @@ router.get('/search', (req, res) => {
 })
 //删除视频(根据视频名字删除软件)
 router.post('/delete', (req, res) => {
-    const { name } = req.body
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    } else {
-        if (req.session.passport.user.username === 'admin') {
-            VideoModel.deleteOne({ name })
-                .then(() => { res.send({ err: 0, msg: '删除视频成功' }) })
-                .catch(() => { res.send({ err: -1, msg: '删除视频失败' }) })
-        } else {
-            res.send({ err: -999, msg: '没有相关权限' })
-        }
-    }
-
-
-
+    const { title } = req.body
+    console.log(title)
+    VideoModel.deleteOne({ title })
+        .then(() => { res.send({ err: 0, msg: '删除视频成功' }) })
+        .catch(() => { res.send({ err: -1, msg: '删除视频失败' }) })
 })
+
+
+
+
 //得到指定数组的分页信息对象
 function pageFilter(arr, pageNum, pageSize) {
     pageNum = pageNum * 1

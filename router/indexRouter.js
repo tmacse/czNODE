@@ -65,12 +65,14 @@ router.get('/homedata', async (req, res) => {
     const videolist = await VideoModel.find({ "attr": "练兵备战" }).sort({ date_time: -1 }).limit(6)
     //获取强军文化中创意视频的消息列表
     const vloglist = await VideoModel.find({ "attr": "创意视频" }).sort({ date_time: -1 }).limit(6)
+    //获取强军新闻的列表
+    const videoNewslist = await VideoModel.find({ "attr": '强军新闻' }).sort({ date_time: -1 }).limit(1)
 
     Promise.all(
         [
             curriculumlist, noticelist, casebooklist, summarylist,
             governmentlist, trainlist, organizationlist, propagationlist,
-            manpowerlist, movielist, videolist, vloglist,
+            manpowerlist, movielist, videolist, vloglist, videoNewslist,
         ]
     ).then((result) => {
         res.send(
@@ -89,6 +91,7 @@ router.get('/homedata', async (req, res) => {
                     "movielist": result[9],
                     "videolist": result[10],
                     "vloglist": result[11],
+                    "videoNewslist": result[12],
                 }
             })
     })

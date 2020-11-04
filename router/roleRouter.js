@@ -3,25 +3,23 @@ const router = express.Router();
 const RoleModel = require('../model/RoleModel')
 // 获取角色列表
 router.get('/list', (req, res) => {
-    if (req.session.passport.user.username === 'admin'){
-        RoleModel.find()
-            .then(roles => {
-                res.send({
-                    status: 0,
-                    data: roles
-                })
+
+    RoleModel.find()
+        .then(roles => {
+            res.send({
+                status: 0,
+                data: roles
             })
-            .catch(error => {
-                console.error('获取角色列表异常', error)
-                res.send({
-                    status: 1,
-                    msg: '获取角色列表异常, 请重新尝试'
-                })
+        })
+        .catch(error => {
+            console.error('获取角色列表异常', error)
+            res.send({
+                status: 1,
+                msg: '获取角色列表异常, 请重新尝试'
             })
-    }else{
-        res.send({ err: -999, msg: '没有相关权限' })
-    }
-   
+        })
+
+
 })
 // 添加角色
 router.post('/add', (req, res) => {
@@ -30,7 +28,7 @@ router.post('/add', (req, res) => {
     } = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    } else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             RoleModel.create({
                 name: roleName
@@ -52,8 +50,8 @@ router.post('/add', (req, res) => {
             res.send({ err: -999, msg: '没有相关权限' })
         }
     }
- 
-   
+
+
 })
 // 更新角色(设置权限)
 router.post('/update', (req, res) => {
@@ -61,7 +59,7 @@ router.post('/update', (req, res) => {
     role.auth_time = Date.now()
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    }else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             RoleModel.findOneAndUpdate({
                 _id: role._id
@@ -88,7 +86,7 @@ router.post('/update', (req, res) => {
         }
     }
 
-   
+
 })
 
 

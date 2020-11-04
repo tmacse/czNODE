@@ -44,7 +44,7 @@ router.post('/uploads', upload.single('article-img'), (req, res) => {
             status: 0,
             data: {
                 name: req.file.filename,
-                url: 'http://localhost:4000/public/image/articles/' + req.file.filename
+                url: 'http://localhost:5000/public/image/articles/' + req.file.filename
             }
         })
     }

@@ -77,6 +77,8 @@ router.get('/vlog', (req, res) => {
             res.send({ status: 1, msg: '获取列表异常, 请重新尝试' })
         })
 })
+//获得部队管理办的列表
+
 //得到指定数组的分页信息对象
 function pageFilter(arr, pageNum, pageSize) {
     pageNum = pageNum * 1

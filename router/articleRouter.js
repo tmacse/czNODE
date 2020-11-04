@@ -5,21 +5,21 @@ const ArticleModel = require('../model/ArticleModel');
 
 //添加文章（包括精品课程、案列分析和活动概况的总体路由）
 router.post('/add', (req, res) => {
-    let { title, author, department, thumbnail, category, content } = req.body
-    console.log(req.body)
+    let { title, author, department, thumbnail, category, content, download_url } = req.body
+    console.log("添加的文章内容", req.body)
     //判断上述字段都不能为空
     if (title && author && department && category && content) {
         ArticleModel.find({ title }).then((data) => {
             if (data.length === 0) {
                 //文章不存在，可以添加
-                return ArticleModel.insertMany({ title, author, department, thumbnail, category, content })
+                return ArticleModel.insertMany({ title, author, department, thumbnail, category, content, download_url })
             } else {
                 res.send({ err: -3, msg: '文章已经存在' })
             }
         }).then(() => {
             res.send({ err: 0, msg: '添加文章成功' })
-        }).catch(() => {
-            res.send({ err: -2, msg: '添加文章失败' })
+        }).catch((err) => {
+            res.send({ err: -2, msg: '添加文章失败', err })
         })
     } else {
         return res.send({ err: -1, msg: '参数错误' })
@@ -48,69 +48,6 @@ router.post('/update', (req, res) => {
     }
 
 
-})
-//更新文章状态
-router.post('/updateStatus', (req, res) => {
-    const { title } = req.body
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    } else {
-        if (req.session.passport.user.username === 'admin') {
-            ArticleModel.findOneAndUpdate({ title: title }, { ischecked: true })
-                .then((oldarticle) => {
-                    res.send({ err: 0, msg: '更新文章成功', data: oldarticle })
-                }).catch((error) => {
-                    console.log(error)
-                    res.send({ err: 1, msg: '更新文章状态异常, 请重新尝试' })
-
-                })
-        } else {
-            res.send({ err: -999, msg: '没有该权限' })
-        }
-    }
-
-
-})
-//更新文章状态shangtoutiao
-router.post('/updateStatusToTop', (req, res) => {
-    const { title } = req.body
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    } else {
-        if (req.session.passport.user.username === 'admin') {
-            ArticleModel.findOneAndUpdate({ title: title }, { isToped: true })
-                .then((oldarticle) => {
-                    res.send({ err: 0, msg: '更新成功', data: oldarticle })
-                }).catch((error) => {
-                    console.log(error)
-                    res.send({ err: 1, msg: '更新文章状态异常, 请重新尝试' })
-
-                })
-        } else {
-            res.send({ err: -999, msg: '没有权限' })
-        }
-    }
-
-
-})
-//更新文章状态下头条
-router.post('/updateStatusToDown', (req, res) => {
-    const { title } = req.body
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    } else {
-        if (req.session.passport.user.username === 'admin') {
-            ArticleModel.findOneAndUpdate({ title: title }, { isToped: false })
-                .then((oldarticle) => {
-                    res.send({ err: 0, msg: '更新成功', data: oldarticle })
-                }).catch((error) => {
-                    console.log()
-                    res.send({ err: 1, msg: '更新文章状态异常, 请重新尝试' })
-                })
-        } else {
-            res.send({ err: -999, msg: '没有权限' })
-        }
-    }
 })
 
 //查询文章（依照文章标题或者内容）
@@ -151,7 +88,7 @@ router.post('/delete', (req, res) => {
 router.post('/getArticleByPage', (req, res) => {
     let pageSize = req.body.pageSize || 5 //设置为默认值显示5个
     let pageNumber = req.body.pageNumber || 1 //设置为默认值显示第一页
-    ArticleModel.find({ ischecked: false }).sort({ date_time: -1 }).limit(Number(pageSize)).skip(Number((pageNumber - 1) * pageSize))
+    ArticleModel.find().sort({ date_time: -1 }).limit(Number(pageSize)).skip(Number((pageNumber - 1) * pageSize))
         .then((data) => {
             res.send({ err: 0, msg: '查询成功', list: data })
         }).catch((err) => {
@@ -169,31 +106,11 @@ router.get('/getList', (req, res) => {
             res.send({ err: -1, msg: 'wrong' })
         })
 })
-// 获取文章分页列表（未经过审核的）
-router.get('/list', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    ArticleModel.find({ ischecked: false }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取文章列表异常, 请重新尝试'
-            })
-        })
-})
-//获取文章分页列表（已经审核过的）
+
+//获取文章分页列表
 router.get('/checkedlist', (req, res) => {
     const { pageNum, pageSize } = req.query
-    ArticleModel.find({ $and: [{ ischecked: true }, { isToped: false }] }).sort({ date_time: -1 })
+    ArticleModel.find().sort({ date_time: -1 })
         .then(articles => { res.send({ status: 0, data: pageFilter(articles, pageNum, pageSize) }) })
         .catch(error => {
             console.error('获取文章列表异常', error)
@@ -203,27 +120,7 @@ router.get('/checkedlist', (req, res) => {
             })
         })
 })
-//获取文章分页列表（已经审核过的）
-router.get('/checkedtoplist', (req, res) => {
-    const {
-        pageNum,
-        pageSize
-    } = req.query
-    ArticleModel.find({ isToped: true }).sort({ date_time: -1 })
-        .then(articles => {
-            res.send({
-                status: 0,
-                data: pageFilter(articles, pageNum, pageSize)
-            })
-        })
-        .catch(error => {
-            console.error('获取文章列表异常', error)
-            res.send({
-                status: 1,
-                msg: '获取文章列表异常, 请重新尝试'
-            })
-        })
-})
+
 router.get('/search', (req, res) => {
     const {
         pageNum,
@@ -260,7 +157,7 @@ router.get('/search', (req, res) => {
             category: new RegExp(`^.*${articleCategory}.*$`)
         }
     }
-    ArticleModel.find(contition).find({ $and: [{ ischecked: true }, { isToped: false }] }).sort({ date_time: -1 })
+    ArticleModel.find(contition).find().sort({ date_time: -1 })
         .then(articles => {
             res.send({
                 status: 0,

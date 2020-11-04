@@ -32,11 +32,15 @@ const roleRouter = require('./router/roleRouter.js')
 const departmentMessageRouter = require('./router/departmentMessageRouter.js')
 const videoRouter = require('./router/videoRouter.js')
 const listRouter = require('./router/listRouter.js')
+const mailRouter = require('./router/mailRouter.js')
+const articleFileRouter = require('./router/articleFileRouter.js')
 
 app.use('/', indexRouter)
 app.use('/user', userRouter)
+app.use('/mail', mailRouter)
 //引入文章和文章的图片地址所需的路由
 app.use('/article', articleRouter)
+app.use('/file', articleFileRouter)//文章的文件上传和删除路由
 app.use('/articlesImg', articleimageFileRouter)//缩略图
 //引入通知的路由
 app.use('/notices', noticeRouter)

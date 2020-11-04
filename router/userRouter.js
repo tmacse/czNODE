@@ -15,7 +15,7 @@ router.post('/add', (req, res) => {
     } = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    } else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             UserModel.findOne({
                 username
@@ -58,14 +58,14 @@ router.post('/add', (req, res) => {
     // 处理: 判断用户是否已经存在, 如果存在, 返回提示错误的信息, 如果不存在, 保存
     // 查询(根据username)
 
-   
+
 })
 // 更新用户
 router.post('/update', (req, res) => {
     const user = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    } else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             UserModel.findOneAndUpdate({
                 _id: user._id
@@ -90,7 +90,7 @@ router.post('/update', (req, res) => {
         }
     }
 
-    
+
 })
 // passport.use(new LocalStrategy(
 //     function (username, password, done) {
@@ -111,6 +111,7 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
         username,
         password
     } = req.body
+    
     // 根据username和password查询数据库users, 如果没有, 返回提示错误的信息, 如果有, 返回登陆成功信息(包含user)
     UserModel.findOne({
         username,
@@ -120,7 +121,7 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
             if (user) { // 登陆成功
                 // 生成一个cookie(userid: user._id), 并交给浏览器保存
                 res.cookie('userid', user._id, {
-                    maxAge: 1000*60*60*24*7
+                    maxAge: 1000 * 60 * 60 * 24 * 7
                 })
                 if (user.role_id) {
                     RoleModel.findOne({
@@ -167,7 +168,7 @@ router.post('/delete', (req, res) => {
     } = req.body
     if (typeof req.session.passport === 'undefined') {
         res.send({ err: -888, msg: '未登陆' })
-    } else{
+    } else {
         if (req.session.passport.user.username === 'admin') {
             UserModel.deleteOne({
                 _id: userId
@@ -181,8 +182,8 @@ router.post('/delete', (req, res) => {
             res.send({ status: -999, msg: '没有相关权限' })
         }
     }
-   
-  
+
+
 })
 // 获取所有用户列表
 router.get('/list', (req, res) => {

@@ -37,45 +37,27 @@ router.post('/add', (req, res) => {
 //删除通知
 router.post('/delete', (req, res) => {
     const { title } = req.body
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    } else {
-        if (req.session.passport.user.username === 'admin') {
-            NoticeModel.deleteOne({ title })
-                .then(() => {
-                    res.send({ err: 0, msg: '删除通知成功' })
-                })
-                .catch(() => {
-                    res.send({ err: -1, msg: '删除通知失败' })
-                })
-        } else {
-            res.send({ err: -999, msg: '没有相关权限' })
-        }
-    }
-
+    NoticeModel.deleteOne({ title })
+        .then(() => {
+            res.send({ err: 0, msg: '删除通知成功' })
+        })
+        .catch(() => {
+            res.send({ err: -1, msg: '删除通知失败' })
+        })
 })
 
 //更新通知
 router.post('/update', (req, res) => {
+    const notice = req.body
     const { _id } = req.body;
-    if (typeof req.session.passport === 'undefined') {
-        res.send({ err: -888, msg: '未登陆' })
-    } else {
-        if (req.session.passport.user.username === 'admin') {
-            // console.log(notice._id)//注意此处的_id,必须跟传入的_id命名一致
-            NoticeModel.findOneAndUpdate({ _id }, notice)
-                .then(() => {
-                    res.send({ err: 0, msg: '更新成功' })
-                }).catch((err) => {
-                    console.log('更新通知异常', err)
-                    res.send({ err: -1, msg: '更新失败' })
-                })
-        } else {
-            res.send({ err: -999, msg: '没有相关权限' })
-        }
-    }
-
-
+    console.log('11111', _id, req.body)
+    NoticeModel.findOneAndUpdate({ _id }, notice)
+        .then(() => {
+            res.send({ err: 0, msg: '更新成功' })
+        }).catch((err) => {
+            console.log('更新通知异常', err)
+            res.send({ err: -1, msg: '更新失败' })
+        })
 })
 
 

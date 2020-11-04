@@ -4,8 +4,6 @@ const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
 
-
-
 const dirPath = path.join(__dirname, '..', 'public/video')
 
 const storage = multer.diskStorage({
@@ -40,12 +38,11 @@ router.post('/uploads', upload.single('video'), (req, res) => {
         let file = req.file
         let url = `/public/video/${req.file.filename}`
         console.log(url)
-        // ArticleModel.insertMany({url})
         res.send({
             status: 0,
             data: {
                 name: file.filename,
-                url: BASE_URL_ADDRESS + '/public/video/' + file.filename,
+                url: global.BASE_URL_ADDRESS + '/public/video/' + file.filename,
             }
 
         })
