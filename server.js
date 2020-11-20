@@ -1,3 +1,5 @@
+const easyMonitor = require('easy-monitor');
+// easyMonitor('czNodeAdmin');
 const express = require('express');
 const db = require('./db/connect');
 const bodyparser = require('body-parser');

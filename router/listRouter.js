@@ -77,8 +77,48 @@ router.get('/vlog', (req, res) => {
             res.send({ status: 1, msg: '获取列表异常, 请重新尝试' })
         })
 })
+//获取强军新闻（视频）的列表
+router.get('/newsMovie', (req, res) => {
+    const { pageSize, pageNum } = req.query
+    VideoModel.find({ 'attr': '强军新闻' }).sort({ date_time: -1 })
+        .then(values => { res.send({ status: 0, data: pageFilter(values, pageNum, pageSize) }) })
+        .catch(error => { res.send({ status: 1, error }) })
+})
 //获得部队管理办的列表
-
+router.get('/goverment', (req, res) => {
+    const { pageSize, pageNum } = req.query
+    DepartmentMessageModel.find({ 'department': '部队管理办' }).sort({ date_time: -1 })
+        .then(values => { res.send({ status: 0, data: pageFilter(values, pageNum, pageSize) }) })
+        .catch(error => { res.send({ status: 1, error }) })
+})
+//获得训练办的列表
+router.get('/train', (req, res) => {
+    const { pageSize, pageNum } = req.query
+    DepartmentMessageModel.find({ 'department': '战勤办' }).sort({ date_time: -1 })
+        .then(values => { res.send({ status: 0, data: pageFilter(values, pageNum, pageSize) }) })
+        .catch(error => { res.send({ status: 1, error }) })
+})
+//获得组织办的列表
+router.get('/organization', (req, res) => {
+    const { pageSize, pageNum } = req.query
+    DepartmentMessageModel.find({ 'department': '组织办' }).sort({ date_time: -1 })
+        .then(values => { res.send({ status: 0, data: pageFilter(values, pageNum, pageSize) }) })
+        .catch(error => { res.send({ status: 1, error }) })
+})
+//获取人力资源办的列表
+router.get('/manpower', (req, res) => {
+    const { pageSize, pageNum } = req.query
+    DepartmentMessageModel.find({ 'department': '人力资源办' }).sort({ date_time: -1 })
+        .then(values => { res.send({ status: 0, data: pageFilter(values, pageNum, pageSize) }) })
+        .catch(error => { res.send({ status: 1, error }) })
+})
+//获取宣传保卫办的消息列表
+router.get('/propagation', (req, res) => {
+    const { pageSize, pageNum } = req.query
+    DepartmentMessageModel.find({ 'department': '宣传保卫办' }).sort({ date_time: -1 })
+        .then(values => { res.send({ status: 0, data: pageFilter(values, pageNum, pageSize) }) })
+        .catch(error => { res.send({ status: 1, error }) })
+})
 //得到指定数组的分页信息对象
 function pageFilter(arr, pageNum, pageSize) {
     pageNum = pageNum * 1

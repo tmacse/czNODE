@@ -57,6 +57,7 @@ router.get('/listUnchecked', (req, res) => {
                         res.send({ status: 1, msg: '获取邮件列表异常, 请重新尝试' })
                     })
                 break;
+            //纪委(纪检干事)能看的list
             case LEADER_LIST[3], LEADER_LIST[4]:
                 MailModel.find({
                     $and: [{ ischecked: false }, { leader: MAIL_LIST[3] }]
