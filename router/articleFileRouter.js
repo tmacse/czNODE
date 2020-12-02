@@ -29,13 +29,11 @@ const storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 //上传文件
 router.post('/uploads', upload.single('file'), (req, res) => {
-    let { mimetype, path } = req.file
+    let { mimetype } = req.file
     let types = ['msword', 'msexcel', 'msppt', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'pdf', 'wps', 'ppt', 'pptx'] //允许上传的文件类型
     let tmpType = mimetype.split("/")[1]
     console.log(tmpType)
-    if (types.indexOf(tmpType) == -1) {
-        res.send({ err: -2, msg: '媒体类型错误' })
-    } else {
+    if (types.indexOf(tmpType) !== -1 | 1 == 1) {
         let file = req.file
         let url = `/public/file/${req.file.filename}`
         console.log(url)
@@ -45,8 +43,9 @@ router.post('/uploads', upload.single('file'), (req, res) => {
                 name: file.filename,
                 url: global.BASE_URL_ADDRESS + '/public/file/' + file.filename,
             }
-
         })
+    } else {
+        res.send({ err: -2, msg: '媒体类型错误' })
     }
 })
 //删除视频

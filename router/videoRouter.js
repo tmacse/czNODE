@@ -3,14 +3,14 @@ const router = express.Router();
 const VideoModel = require('../model/VideoModel.js');
 
 router.post('/add', (req, res) => {
-    let { title, url, attr, desc, main_actor, director } = req.body
+    let { title, url, attr, desc, main_actor, director, thumbnail } = req.body
     console.log(req.body)
     //判断上述字段都不能为空
     if (title && url && desc && attr && main_actor && director) {
         VideoModel.find({ title }).then((data) => {
             if (data.length === 0) {
                 //视频名称不存在，可以添加
-                return VideoModel.insertMany({ title, url, desc, attr, main_actor, director })
+                return VideoModel.insertMany({ title, url, desc, attr, main_actor, director, thumbnail })
             } else {
                 res.send({ err: -3, msg: '视频已经存在' })
             }

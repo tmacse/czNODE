@@ -12,6 +12,7 @@ var VideoSchema = new mongoose.Schema({
     main_actor: { type: String, required: true },
     director: { type: String, required: true },
     desc: { type: String, required: true },//视频的描述
+    thumbnail: { type: String },//视频的缩略图
 });
 
 var VideoModel = mongoose.model('videos', VideoSchema);

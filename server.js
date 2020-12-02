@@ -4,9 +4,13 @@ const express = require('express');
 const db = require('./db/connect');
 const bodyparser = require('body-parser');
 const path = require('path')
+var compress = require('compression');
 
 const app = express();
 //使用静态中间件
+app.use(compress());
+app.use(express.json({ limit: '50mb' })) //解决413（payload too large 的问题，一般情况下，单个json文件的大小限制在1M大小，通过设置达到50M）
+app.get('view cache');
 app.use(express.static('public'))
 // 声明使用解析post请求的中间件
 app.use(bodyparser.urlencoded({ extended: false }));
@@ -21,6 +25,22 @@ app.use(require('express-session')({ secret: 'wangbing', resave: true, saveUnini
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash())
+// app.all('*', function (req, res, next) {
+
+//   res.header("Access-Control-Allow-Origin", "*");
+
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+//   res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+
+//   res.header("X-Powered-By", ' 3.2.1')
+
+//   res.header("Content-Type", "application/json;charset=utf-8");
+
+//   next();
+
+// });
+
 // 声明使用路由器中间件
 const indexRouter = require('./router/indexRouter.js')
 //
