@@ -63,7 +63,21 @@ router.post('/search', (req, res) => {
             res.send({ err: -1, msg: '查询失败' })
         })
 })
+//获取各个单位新闻列表（首页）
+router.post('/news', (req, res) => {
+    console.log(req.body)
+    let { department } = req.body
+    console.log(department)
+    ArticleModel.find({ "category": '活动概况' }).find({ "department": department }).sort({ date_time: -1 }).limit(2)
+        .then((data) => {
+            console.log(data)
+            res.send({ err: 0, msg: '查询成功', list: data })
+        }).catch((err) => {
+            console.log(err)
+            res.send({ err: -1, msg: '查询失败' })
+        })
 
+})
 //删除文章(根据文章名字删除文章)
 router.post('/delete', (req, res) => {
     const { title } = req.body

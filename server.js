@@ -56,6 +56,8 @@ const videoRouter = require('./router/videoRouter.js')
 const listRouter = require('./router/listRouter.js')
 const mailRouter = require('./router/mailRouter.js')
 const articleFileRouter = require('./router/articleFileRouter.js')
+const picshowRouter = require('./router/picshowRouter.js')
+const picshowimageFileRouter = require('./router/picshowimageFileRouter.js')
 
 app.use('/', indexRouter)
 app.use('/user', userRouter)
@@ -74,6 +76,8 @@ app.use('/videoFile', videoFileRouter)
 app.use('/role', roleRouter)
 //引入强军动态（各个部门办公室所发的通知之类的信息）
 app.use('/departmentMessage', departmentMessageRouter)
+app.use('/picshow', picshowRouter)
+app.use('/picshowImg', picshowimageFileRouter)
 
 
 //引入静态地址

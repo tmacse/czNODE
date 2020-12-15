@@ -4,6 +4,7 @@ const ArticleModel = require('../model/ArticleModel');
 const NoticeModel = require('../model/NoticeModel.js');
 const DepartmentMessageModel = require('../model/DepartmentMessageModel');
 const VideoModel = require('../model/VideoModel');
+const PicShowModel = require('../model/PicShowModel');
 
 
 //获取通知分页列表
@@ -37,7 +38,7 @@ router.get('/homedata', async (req, res) => {
         .sort({ date_time: -1 }).limit(6)
     //第一层栏目中右边的通知列表
     const noticelist = await NoticeModel.find()
-        .sort({ date_time: -1 }).limit(6)
+        .sort({ date_time: -1 }).limit(10)
     //强军阶梯栏目中间的案例分析列表
     const casebooklist = await ArticleModel.find({ "category": '案例分析' })
         .sort({ date_time: -1 }).limit(6)
@@ -67,12 +68,18 @@ router.get('/homedata', async (req, res) => {
     const vloglist = await VideoModel.find({ "attr": "创意视频" }).sort({ date_time: -1 }).limit(6)
     //获取强军新闻的列表
     const videoNewslist = await VideoModel.find({ "attr": '强军新闻' }).sort({ date_time: -1 }).limit(1)
+    //获取各个小单位新闻的列表
+    const jwNewslist = await ArticleModel.find({ "category": '活动概况' }).find({ "department": '警卫连' })
+        .sort({ date_time: -1 }).limit(12)
+    //获取强军风采的图片所在的列表
+    const picShow = await PicShowModel.find().sort({ date_time: -1 }).limit(7)
 
     Promise.all(
         [
             curriculumlist, noticelist, casebooklist, summarylist,
             governmentlist, trainlist, organizationlist, propagationlist,
             manpowerlist, movielist, videolist, vloglist, videoNewslist,
+            jwNewslist, picShow
         ]
     ).then((result) => {
         res.send(
@@ -92,6 +99,8 @@ router.get('/homedata', async (req, res) => {
                     "videolist": result[10],
                     "vloglist": result[11],
                     "videoNewslist": result[12],
+                    "jwNewslist": result[13],
+                    'picShow': result[14],
                 }
             })
     })
@@ -125,15 +134,6 @@ router.get('/getVideoByID', (req, res) => {
         console.log(err)
     })
 })
-//获取音乐地址
-router.get('/getMusicByID', (req, res) => {
-    const { _id } = req.query
-    MusicModel.find({ _id: _id }).then((data) => {
-        res.send({ err: 0, data: data })
-        console.log(data)
-    }).catch((err) => {
-        console.log(err)
-    })
-})
+
 
 module.exports = router
