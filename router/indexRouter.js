@@ -5,6 +5,7 @@ const NoticeModel = require('../model/NoticeModel.js');
 const DepartmentMessageModel = require('../model/DepartmentMessageModel');
 const VideoModel = require('../model/VideoModel');
 const PicShowModel = require('../model/PicShowModel');
+const LeaderModel = require('../model/LeaderModel');
 
 
 //获取通知分页列表
@@ -73,13 +74,18 @@ router.get('/homedata', async (req, res) => {
         .sort({ date_time: -1 }).limit(12)
     //获取强军风采的图片所在的列表
     const picShow = await PicShowModel.find().sort({ date_time: -1 }).limit(7)
+    //获取强军政策的图片的列表
+    const qjPolicy = await ArticleModel.find({ "category": '强军政策' })
+        .sort({ date_time: -1 }).limit(14)
+    //获取首长和参谋的名字
+    const leaderName = await LeaderModel.find().sort({ date_time: -1 }).limit(1)
 
     Promise.all(
         [
             curriculumlist, noticelist, casebooklist, summarylist,
             governmentlist, trainlist, organizationlist, propagationlist,
             manpowerlist, movielist, videolist, vloglist, videoNewslist,
-            jwNewslist, picShow
+            jwNewslist, picShow, qjPolicy, leaderName
         ]
     ).then((result) => {
         res.send(
@@ -101,6 +107,8 @@ router.get('/homedata', async (req, res) => {
                     "videoNewslist": result[12],
                     "jwNewslist": result[13],
                     'picShow': result[14],
+                    'qjPolicy': result[15],
+                    'leaderName': result[16]
                 }
             })
     })
@@ -134,6 +142,15 @@ router.get('/getVideoByID', (req, res) => {
         console.log(err)
     })
 })
-
+//获取PicShow 的地址
+router.get('/getPicShowByID', (req, res) => {
+    const { _id } = req.query
+    console.log(_id)
+    PicShowModel.find({ _id: _id }).then((data) => {
+        res.send({ err: 0, data: data })
+    }).catch((err) => {
+        console.log(err)
+    })
+})
 
 module.exports = router

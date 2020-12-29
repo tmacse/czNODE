@@ -57,7 +57,8 @@ const listRouter = require('./router/listRouter.js')
 const mailRouter = require('./router/mailRouter.js')
 const articleFileRouter = require('./router/articleFileRouter.js')
 const picshowRouter = require('./router/picshowRouter.js')
-const picshowimageFileRouter = require('./router/picshowimageFileRouter.js')
+const picshowimageFileRouter = require('./router/picshowimageFileRouter.js');
+const leaderRouter = require('./router/leaderRouter.js')
 
 app.use('/', indexRouter)
 app.use('/user', userRouter)
@@ -78,6 +79,7 @@ app.use('/role', roleRouter)
 app.use('/departmentMessage', departmentMessageRouter)
 app.use('/picshow', picshowRouter)
 app.use('/picshowImg', picshowimageFileRouter)
+app.use('/leader', leaderRouter)
 
 
 //引入静态地址
