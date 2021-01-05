@@ -68,7 +68,7 @@ router.post('/news', (req, res) => {
     console.log(req.body)
     let { department } = req.body
     console.log(department)
-    ArticleModel.find({ "category": '活动概况' }).find({ "department": department }).sort({ date_time: -1 }).limit(2)
+    ArticleModel.find({ "category": '活动概况' }).find({ thumbnail: { $exists: true, $ne: [] } }).find({ "department": department }).sort({ date_time: -1 }).limit(2)
         .then((data) => {
             console.log(data)
             res.send({ err: 0, msg: '查询成功', list: data })

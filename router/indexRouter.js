@@ -44,7 +44,7 @@ router.get('/homedata', async (req, res) => {
     const casebooklist = await ArticleModel.find({ "category": '案例分析' })
         .sort({ date_time: -1 }).limit(6)
     //活动概况列表（包括左侧图片展示和右侧文字展示）
-    const summarylist = await ArticleModel.find({ "category": '活动概况' })
+    const summarylist = await ArticleModel.find({ "category": '活动概况' }).find({ thumbnail: { $exists: true, $ne: [] } })
         .sort({ date_time: -1 }).limit(6)
     //获取强军动态中部队管理办的消息列表
     const governmentlist = await DepartmentMessageModel.find({ "department": "部队管理办" })
@@ -70,7 +70,7 @@ router.get('/homedata', async (req, res) => {
     //获取强军新闻的列表
     const videoNewslist = await VideoModel.find({ "attr": '强军新闻' }).sort({ date_time: -1 }).limit(1)
     //获取各个小单位新闻的列表
-    const jwNewslist = await ArticleModel.find({ "category": '活动概况' }).find({ "department": '警卫连' })
+    const jwNewslist = await ArticleModel.find({ "category": '活动概况' }).find({ thumbnail: { $exists: true, $ne: [] } }).find({ "department": '警卫连' })
         .sort({ date_time: -1 }).limit(12)
     //获取强军风采的图片所在的列表
     const picShow = await PicShowModel.find().sort({ date_time: -1 }).limit(7)

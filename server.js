@@ -59,6 +59,7 @@ const articleFileRouter = require('./router/articleFileRouter.js')
 const picshowRouter = require('./router/picshowRouter.js')
 const picshowimageFileRouter = require('./router/picshowimageFileRouter.js');
 const leaderRouter = require('./router/leaderRouter.js')
+const quantizationRouter = require('./router/quantizationRouter.js')
 
 app.use('/', indexRouter)
 app.use('/user', userRouter)
@@ -80,6 +81,8 @@ app.use('/departmentMessage', departmentMessageRouter)
 app.use('/picshow', picshowRouter)
 app.use('/picshowImg', picshowimageFileRouter)
 app.use('/leader', leaderRouter)
+app.use('/quantization', quantizationRouter)
+
 
 
 //引入静态地址
