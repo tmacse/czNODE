@@ -20,4 +20,11 @@ global.BASE_ALL_TUPLE_DEPARTMENT = [
     { Cname: '场务连', name: 'cwl' },
     { Cname: '四站连', name: 'sz' }
 ]
+global.BASE_SEASON = [
+    { Cname: '一季度优秀个人', name: 'season1' },
+    { Cname: '二季度优秀个人', name: 'season2' },
+    { Cname: '三季度优秀个人', name: 'season3' },
+    { Cname: '四季度优秀个人', name: 'season4' }
+]
+
 global.BASE_ENG_DEPARTMENT = ["jx", "yl", "ys", "jy", "hj", "fxgzs", "qxt", "yy", "td", "jw", "qc", "cwl", "sz"]

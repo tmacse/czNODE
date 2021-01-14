@@ -25,6 +25,7 @@ app.use(require('express-session')({ secret: 'wangbing', resave: true, saveUnini
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash())
+
 // app.all('*', function (req, res, next) {
 
 //   res.header("Access-Control-Allow-Origin", "*");
@@ -60,6 +61,7 @@ const picshowRouter = require('./router/picshowRouter.js')
 const picshowimageFileRouter = require('./router/picshowimageFileRouter.js');
 const leaderRouter = require('./router/leaderRouter.js')
 const quantizationRouter = require('./router/quantizationRouter.js')
+const soloRouter = require('./router/soloRouter.js')
 
 app.use('/', indexRouter)
 app.use('/user', userRouter)
@@ -82,7 +84,7 @@ app.use('/picshow', picshowRouter)
 app.use('/picshowImg', picshowimageFileRouter)
 app.use('/leader', leaderRouter)
 app.use('/quantization', quantizationRouter)
-
+app.use('/solo', soloRouter)
 
 
 //引入静态地址

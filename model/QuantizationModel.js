@@ -1,4 +1,3 @@
-//这是一个文章的Model(包括强军阶梯的所有内容：精品课程、案例分析和活动概况)
 const mongoose = require('mongoose');
 var moment = require('moment')
 moment.locale('zh-cn')
