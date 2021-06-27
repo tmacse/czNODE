@@ -84,7 +84,7 @@ router.get('/list', async (req, res) => {
         (result) => {
             res.send({
                 success: true,
-                data: [jx[0], yl[0], ys[0], hj[0], fxgzs[0], qxt[0], yy[0], jw[0], td[0], qc[0], cwl[0], sz[0]]
+                data: [jx[0], yl[0], ys[0], jy[0], hj[0], fxgzs[0], qxt[0], yy[0], jw[0], td[0], qc[0], cwl[0], sz[0]]
             })
         }
     )

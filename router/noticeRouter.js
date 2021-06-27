@@ -66,29 +66,29 @@ router.get('/search', (req, res) => {
         pageNum,
         pageSize,
         searchName,
-        noticeTitle,
-        noticeContent,
-        noticeAuthor,
-        noticeDepartment,
+        Title,
+        Content,
+        Author,
+        Department,
     } = req.query
     let contition = {}
-    if (noticeTitle) {
+    if (Title) {
         contition = {
-            title: new RegExp(`^.*${noticeTitle}.*$`)
+            title: new RegExp(`^.*${Title}.*$`)
         }
-    } else if (noticeContent) {
+    } else if (Content) {
         contition = {
-            content: new RegExp(`^.*${noticeContent}.*$`)
-        }
-    }
-    else if (noticeAuthor) {
-        contition = {
-            author: new RegExp(`^.*${noticeAuthor}.*$`)
+            content: new RegExp(`^.*${Content}.*$`)
         }
     }
-    else if (noticeDepartment) {
+    else if (Author) {
         contition = {
-            department: new RegExp(`^.*${noticeDepartment}.*$`)
+            author: new RegExp(`^.*${Author}.*$`)
+        }
+    }
+    else if (Department) {
+        contition = {
+            department: new RegExp(`^.*${Department}.*$`)
         }
     }
 

@@ -13,6 +13,9 @@ var VideoSchema = new mongoose.Schema({
     director: { type: String, required: true },
     desc: { type: String, required: true },//视频的描述
     thumbnail: { type: String },//视频的缩略图
+
+    scan_num: { type: Number, default: 0 },//视频的浏览量
+    thumb_num: { type: Number, default: 0 }//视频的点赞量
 });
 
 var VideoModel = mongoose.model('videos', VideoSchema);

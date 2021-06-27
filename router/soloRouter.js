@@ -80,6 +80,7 @@ router.get('/list', async (req, res) => {
         jx, yl, ys, jy, hj, fxgzs, qxt, yy, td, jw, qc, cwl, sz
     ).then(
         (result) => {
+            console.log('请求来到了后台')
             res.send({
                 success: true,
                 title: '一季度优秀个人',

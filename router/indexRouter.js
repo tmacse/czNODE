@@ -6,6 +6,7 @@ const DepartmentMessageModel = require('../model/DepartmentMessageModel');
 const VideoModel = require('../model/VideoModel');
 const PicShowModel = require('../model/PicShowModel');
 const LeaderModel = require('../model/LeaderModel');
+var moment = require('moment')
 
 
 //获取通知分页列表
@@ -33,52 +34,52 @@ function pageFilter(arr, pageNum, pageSize) {
 }
 //这是一个前段获取界面的router
 
-router.get('/homedata', async (req, res) => {
+router.get('/homedata', (req, res) => {
     //强军阶梯栏目左边的精品课程，最多显示6个
-    const curriculumlist = await ArticleModel.find({ "category": '精品课程' })
+    const curriculumlist = ArticleModel.find({ "category": '精品课程' })
         .sort({ date_time: -1 }).limit(6)
     //第一层栏目中右边的通知列表
-    const noticelist = await NoticeModel.find()
+    const noticelist = NoticeModel.find()
         .sort({ date_time: -1 }).limit(10)
     //强军阶梯栏目中间的案例分析列表
-    const casebooklist = await ArticleModel.find({ "category": '案例分析' })
+    const casebooklist = ArticleModel.find({ "category": '案例分析' })
         .sort({ date_time: -1 }).limit(6)
     //活动概况列表（包括左侧图片展示和右侧文字展示）
-    const summarylist = await ArticleModel.find({ "category": '活动概况' }).find({ thumbnail: { $exists: true, $ne: [] } })
+    const summarylist = ArticleModel.find({ "category": '活动概况' }).find({ thumbnail: { $exists: true, $ne: [] } })
         .sort({ date_time: -1 }).limit(6)
     //获取强军动态中部队管理办的消息列表
-    const governmentlist = await DepartmentMessageModel.find({ "department": "部队管理办" })
+    const governmentlist = DepartmentMessageModel.find({ "department": "部队管理办" })
         .sort({ date_time: -1 }).limit(6)
     //获取强军动态中战勤办的消息列表
-    const trainlist = await DepartmentMessageModel.find({ 'department': '战勤办' })
+    const trainlist = DepartmentMessageModel.find({ 'department': '战勤办' })
         .sort({ date_time: -1 }).limit(6)
     //获取强军动态中组织办的消息列表
-    const organizationlist = await DepartmentMessageModel.find({ 'department': '组织办' })
+    const organizationlist = DepartmentMessageModel.find({ 'department': '组织办' })
         .sort({ date_time: -1 }).limit(6)
     //获取强军动态中宣传保卫办的消息列表
-    const propagationlist = await DepartmentMessageModel.find({ 'department': '宣传保卫办' })
+    const propagationlist = DepartmentMessageModel.find({ 'department': '宣传保卫办' })
         .sort({ date_time: -1 }).limit(6)
     //获取强军动态中人力资源办的消息列表
-    const manpowerlist = await DepartmentMessageModel.find({ 'department': '人力资源办' })
+    const manpowerlist = DepartmentMessageModel.find({ 'department': '人力资源办' })
         .sort({ date_time: -1 }).limit(6)
     //获取强军文化中强军影视的消息列表
-    const movielist = await VideoModel.find({ "attr": '强军影视' }).sort({ date_time: -1 }).limit(6)
+    const movielist = VideoModel.find({ "attr": '强军影视' }).sort({ date_time: -1 }).limit(6)
     //获取强军文化中练兵备战的消息列表
-    const videolist = await VideoModel.find({ "attr": "练兵备战" }).sort({ date_time: -1 }).limit(6)
+    const videolist = VideoModel.find({ "attr": "练兵备战" }).sort({ date_time: -1 }).limit(6)
     //获取强军文化中创意视频的消息列表
-    const vloglist = await VideoModel.find({ "attr": "创意视频" }).sort({ date_time: -1 }).limit(6)
+    const vloglist = VideoModel.find({ "attr": "创意视频" }).sort({ date_time: -1 }).limit(6)
     //获取强军新闻的列表
-    const videoNewslist = await VideoModel.find({ "attr": '强军新闻' }).sort({ date_time: -1 }).limit(1)
+    const videoNewslist = VideoModel.find({ "attr": '强军新闻' }).sort({ date_time: -1 }).limit(1)
     //获取各个小单位新闻的列表
-    const jwNewslist = await ArticleModel.find({ "category": '活动概况' }).find({ thumbnail: { $exists: true, $ne: [] } }).find({ "department": '警卫连' })
+    const jwNewslist = ArticleModel.find({ "category": '活动概况' }).find({ thumbnail: { $exists: true, $ne: [] } }).find({ "department": '警卫连' })
         .sort({ date_time: -1 }).limit(12)
     //获取强军风采的图片所在的列表
-    const picShow = await PicShowModel.find().sort({ date_time: -1 }).limit(7)
+    const picShow = PicShowModel.find().sort({ date_time: -1 }).limit(7)
     //获取强军政策的图片的列表
-    const qjPolicy = await ArticleModel.find({ "category": '强军政策' })
+    const qjPolicy = ArticleModel.find({ "category": '强军政策' })
         .sort({ date_time: -1 }).limit(14)
     //获取首长和参谋的名字
-    const leaderName = await LeaderModel.find().sort({ date_time: -1 }).limit(1)
+    const leaderName = LeaderModel.find().sort({ date_time: -1 }).limit(1)
 
     Promise.all(
         [
@@ -112,6 +113,25 @@ router.get('/homedata', async (req, res) => {
                 }
             })
     })
+})
+//获取百部电影的界面和基层微视频
+router.get('/historylist', async (req, res) => {
+    //获取百部电影
+    const historylist = await VideoModel.find({ "attr": '强军影视' }).sort({ date_time: -1 }).limit(6)
+    const minivlog = await VideoModel.find({ "attr": "创意视频" }).sort({ date_time: -1 }).limit(6)
+    Promise.all(
+        [historylist, minivlog]
+    ).then(
+        (result) => {
+            res.send({
+                success: true,
+                data: {
+                    'historylist': result[0],
+                    'minivlog': result[1]
+                }
+            })
+        }
+    )
 })
 //获取详情页面（包括通知，精品课程，案列分析，活动概况等）
 router.get('/ByID', (req, res) => {
@@ -152,5 +172,86 @@ router.get('/getPicShowByID', (req, res) => {
         console.log(err)
     })
 })
+//获取统计各个单位新闻的接口
+router.get('/statistics', async (req, res) => {
+    //mongodb的聚合操作，通过查询可直接根据月份排序，返回的结果如下
+    // 统计各个单位总稿件量
+    const departmentList = await ArticleModel.aggregate([
+        { $match: { category: '活动概况' } },
+        {
+            $group: { _id: { department: "$department" }, count: { $sum: 1 } }//根据单位来group分类
+        }
+    ])
+    const CountByMonthList = await ArticleModel.aggregate([
+        { $match: { category: '活动概况' } },
+        { $project: { month: { $substr: ["$time", 0, 7] }, department: "$department" } },
+        { $group: { _id: { department: "$department", month: "$month" }, count: { $sum: 1 } } }
+    ])
+    //定义本月的月份
+    const this_month = moment().format('YYYY/MM')
+    // 定义下个月的月份
+    const last_month = moment().subtract(1, 'months').format('YYYY/MM')
+    // 生成上月的list
+    let lastMonth = []
+    CountByMonthList.map(item => {
+        if (item._id.month == last_month) {
+            lastMonth.push(item)
+        }
+    })
+    // 生成本月的list
+    let thisMonth = []
+    CountByMonthList.map(item => {
+        if (item._id.month == this_month) {
+            thisMonth.push(item)
+        }
+    })
+    console.log(departmentList)
+    Promise.all(
+        [departmentList, thisMonth, lastMonth]
+    )
+        .then((result) => {
+            //生成hashTable,包括所有单位的deparment,其中将total设置为0
+            let hashTable = []
+            BASE_ALL_TUPLE_DEPARTMENT.slice(3).forEach((obj) => {
+                console.log(obj)
+                hashTable.push({ _id: obj.name, name: obj.Cname, total: 0, last_month: 0, this_month: 0 })
+            })
+            //循环更改departmentList里面的值
+            for (let i = 0; i < departmentList.length; i++) {
+                let temp = (departmentList[i]._id).department //获取到归类后的单位的值
+                hashTable.forEach((obj) => {
+                    if (obj.name === temp) {
+                        obj.total = departmentList[i].count
+                    }
+                }
+                )
+            }
 
+            //循环更改本月的数量
+            for (let i = 0; i < thisMonth.length; i++) {
+                let temp = thisMonth[i]._id.department
+                hashTable.forEach((obj) => {
+                    if (obj.name === temp) {
+                        obj.this_month = thisMonth[i].count
+                    }
+                })
+            }
+            // 接下来要写的地方
+            for (let i = 0; i < lastMonth.length; i++) {
+                let temp = lastMonth[i]._id.department
+                hashTable.forEach((obj) => {
+                    if (obj.name === temp) {
+                        obj.last_month = lastMonth[i].count
+                    }
+                })
+            }
+            res.send({
+                // hashTable是十四个单位的值
+                data: hashTable
+            })
+        })
+        .catch()
+
+
+})
 module.exports = router

@@ -1,10 +1,13 @@
 const easyMonitor = require('easy-monitor');
 // easyMonitor('czNodeAdmin');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const express = require('express');
 const db = require('./db/connect');
 const bodyparser = require('body-parser');
 const path = require('path')
 var compress = require('compression');
+
+
 
 const app = express();
 //使用静态中间件
@@ -26,21 +29,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash())
 
-// app.all('*', function (req, res, next) {
+// app.use('/', createProxyMiddleware({ target: 'http://localhost:3000/', changeOrigin: true }));
 
-//   res.header("Access-Control-Allow-Origin", "*");
 
-//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
-//   res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-
-//   res.header("X-Powered-By", ' 3.2.1')
-
-//   res.header("Content-Type", "application/json;charset=utf-8");
-
-//   next();
-
-// });
 
 // 声明使用路由器中间件
 const indexRouter = require('./router/indexRouter.js')
